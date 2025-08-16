@@ -1,0 +1,29 @@
+# --- Python cache ---
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+
+# --- Virtual environments ---
+.venv/
+venv/
+env/
+
+# --- Logs & temporary files ---
+*.log
+.cache/
+.mypy_cache/
+.pytest_cache/
+.ipynb_checkpoints/
+
+# --- OS junk ---
+.DS_Store
+Thumbs.db
+
+# --- IDE / editor files ---
+.vscode/
+.idea/
+*.swp
+
+# --- CrewAI / project-specific temporary files ---
+crew.log
