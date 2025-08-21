@@ -1,0 +1,66 @@
+Sources           Count      %   cum%
+------------- --------- ------ ------
+192.168.1.132       191  100.0  100.0
+
+Destinations     Count      %   cum%
+------------ --------- ------ ------
+192.168.1.1        191  100.0  100.0
+
+Query Type     Count      %   cum%
+---------- --------- ------ ------
+A?               141   73.8   73.8
+AAAA?             50   26.2  100.0
+
+Opcode     Count      %   cum%
+------ --------- ------ ------
+Query        191  100.0  100.0
+
+Rcode       Count      %   cum%
+------- --------- ------ ------
+Noerror       191  100.0  100.0
+
+Query Name     Count      %   cum%
+---------- --------- ------ ------
+com              191  100.0  100.0
+
+Query Name      Count      %   cum%
+----------- --------- ------ ------
+meethue.com        99   51.8   51.8
+philips.com        92   48.2  100.0
+
+Query Name                   Count      %   cum%
+------------------------ --------- ------ ------
+www2.meethue.com                87   45.5   45.5
+dc1.philips.com                 86   45.0   90.6
+diagnostics.meethue.com         12    6.3   96.9
+ecdinterface.philips.com         6    3.1  100.0
+
+Query Name                       Count      %   cum%
+---------------------------- --------- ------ ------
+www2.meethue.com                    87   45.5   45.5
+dcp.dc1.philips.com                 86   45.0   90.6
+diagnostics.meethue.com             12    6.3   96.9
+www.ecdinterface.philips.com         6    3.1  100.0
+
+Source        Query Name     Count      %   cum%
+------------- ---------- --------- ------ ------
+192.168.1.132 com              191  100.0  100.0
+
+Source        Query Name      Count      %   cum%
+------------- ----------- --------- ------ ------
+192.168.1.132 meethue.com        99   51.8   51.8
+192.168.1.132 philips.com        92   48.2  100.0
+
+Source        Query Name                   Count      %   cum%
+------------- ------------------------ --------- ------ ------
+192.168.1.132 www2.meethue.com                87   45.5   45.5
+192.168.1.132 dc1.philips.com                 86   45.0   90.6
+192.168.1.132 diagnostics.meethue.com         12    6.3   96.9
+192.168.1.132 ecdinterface.philips.com         6    3.1  100.0
+
+Source        Query Name                       Count      %   cum%
+------------- ---------------------------- --------- ------ ------
+192.168.1.132 www2.meethue.com                    87   45.5   45.5
+192.168.1.132 dcp.dc1.philips.com                 86   45.0   90.6
+192.168.1.132 diagnostics.meethue.com             12    6.3   96.9
+192.168.1.132 www.ecdinterface.philips.com         6    3.1  100.0

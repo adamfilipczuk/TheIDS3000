@@ -1,0 +1,110 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2 Final//EN">
+<html>
+ <head>
+  <title>Index of /publicDatasets/IoT-23-Dataset/IndividualScenarios/CTU-Honeypot-Capture-4-1</title>
+ </head>
+ <body>
+<h1>Index of /publicDatasets/IoT-23-Dataset/IndividualScenarios/CTU-Honeypot-Capture-4-1</h1>
+  <table>
+   <tr><th valign="top"><img src="/icons/blank.gif" alt="[ICO]"></th><th><a href="?C=N;O=A">Name</a></th><th><a href="?C=M;O=D">Last modified</a></th><th><a href="?C=S;O=A">Size</a></th><th><a href="?C=D;O=A">Description</a></th></tr>
+   <tr><th colspan="5"><hr></th></tr>
+<tr><td valign="top"><img src="/icons/back.gif" alt="[PARENTDIR]"></td><td><a href="/publicDatasets/IoT-23-Dataset/IndividualScenarios/">Parent Directory</a></td><td>&nbsp;</td><td align="right">  - </td><td>&nbsp;</td></tr>
+<tr><td valign="top"><img src="/icons/unknown.gif" alt="[   ]"></td><td><a href="2018-10-25-14-06-32-192.168.1.132.dnstop">2018-10-25-14-06-32-192.168.1.132.dnstop</a></td><td align="right">2021-01-18 20:33  </td><td align="right">2.5K</td><td>&nbsp;</td></tr>
+<tr><td valign="top"><img src="/icons/unknown.gif" alt="[   ]"></td><td><a href="2018-10-25-14-06-32-192.168.1.132.passivedns">2018-10-25-14-06-32-192.168.1.132.passivedns</a></td><td align="right">2021-01-18 20:33  </td><td align="right">4.0K</td><td>&nbsp;</td></tr>
+<tr><td valign="top"><img src="/icons/unknown.gif" alt="[   ]"></td><td><a href="2018-10-25-14-06-32-192.168.1.132.capinfos">2018-10-25-14-06-32-192.168.1.132.capinfos</a></td><td align="right">2021-01-18 20:33  </td><td align="right">1.1K</td><td>&nbsp;</td></tr>
+<tr><td valign="top"><img src="/icons/unknown.gif" alt="[   ]"></td><td><a href="2018-10-25-14-06-32-192.168.1.132.pcap.xz">2018-10-25-14-06-32-192.168.1.132.pcap.xz</a></td><td align="right">2021-03-09 18:00  </td><td align="right">368K</td><td>&nbsp;</td></tr>
+<tr><td valign="top"><img src="/icons/folder.gif" alt="[DIR]"></td><td><a href="suricata/">suricata/</a></td><td align="right">2022-01-30 12:27  </td><td align="right">  - </td><td>&nbsp;</td></tr>
+<tr><td valign="top"><img src="/icons/unknown.gif" alt="[   ]"></td><td><a href="README.json">README.json</a></td><td align="right">2022-03-27 05:49  </td><td align="right"> 13K</td><td>&nbsp;</td></tr>
+<tr><td valign="top"><img src="/icons/folder.gif" alt="[DIR]"></td><td><a href="bro/">bro/</a></td><td align="right">2022-03-30 10:40  </td><td align="right">  - </td><td>&nbsp;</td></tr>
+<tr><td valign="top"><img src="/icons/text.gif" alt="[TXT]"></td><td><a href="README.md">README.md</a></td><td align="right">2022-03-30 10:54  </td><td align="right">2.8K</td><td>&nbsp;</td></tr>
+<tr><td valign="top"><img src="/icons/text.gif" alt="[TXT]"></td><td><a href="README.html">README.html</a></td><td align="right">2022-03-30 10:54  </td><td align="right">3.5K</td><td>&nbsp;</td></tr>
+   <tr><th colspan="5"><hr></th></tr>
+</table>
+<h1 id="iot-lab-capture">IoT Lab Capture</h1>
+<ul>
+<li>Description: This is network traffic capture for the honeypot device Philips hue Bridge. This is a capture renamed 4-1, but the original capture is still also named “CTU-Honeypot-Bridge-Philips-Hue-1-2018-10-25”</li>
+<li>Model: Philips hue Bridge</li>
+<li>Duration:</li>
+</ul>
+<h1 id="descripttion-of-files">Descripttion of Files</h1>
+<ul>
+<li>.capinfos
+<ul>
+<li>Capinfos file</li>
+</ul></li>
+<li>.dnstop
+<ul>
+<li>DNS top file</li>
+</ul></li>
+<li>mitm.out
+<ul>
+<li>Mitm proxy interception file of http and https</li>
+</ul></li>
+<li>.mitm.weblog
+<ul>
+<li>This is the HTTP and HTTPS web log that includes Labels. This is the preferred file for web analysis.</li>
+<li>This file includes a header with the columns names. There are two new columns defined by us:
+<ul>
+<li>Column id: This number is unique for all the weblogs generated <strong>inside</strong> the same TCP connection. When a TCP connection is opened and several GET/POST, etc., requests are made inside it, all of them are assigned the same Id in this file.</li>
+<li>Column timestamp_end: This is the timestamp when the weblog ended. If you use this with the id column you can compute the total duration of the TCP connection that generated <strong>all</strong> the weblogs. Similar to the duration of a hypothetical CONNECT request if this would have been done using a proxy.</li>
+</ul></li>
+</ul></li>
+<li>.passivedns
+<ul>
+<li>Passive DNS file</li>
+</ul></li>
+<li>.pcap
+<ul>
+<li>Original pcap file</li>
+</ul></li>
+<li>.rrd
+<ul>
+<li>RRD file for graphs</li>
+</ul></li>
+<li>.weblogng
+<ul>
+<li>WEB log of http traffic only. Generated with justsniffer</li>
+</ul></li>
+<li>.exe.zip
+<ul>
+<li>Original malware file</li>
+</ul></li>
+<li>bro
+<ul>
+<li>Folder with all the bro output files</li>
+</ul></li>
+<li>.biargus
+<ul>
+<li>Argus binary file. Bidirectional flows, 3600s of report time.</li>
+</ul></li>
+<li>.binetflow
+<ul>
+<li>Argus text file with bidirectional flows. Report time 3600 secs.</li>
+</ul></li>
+<li>.uniargus
+<ul>
+<li>Argus binary file. Unidirectional flows, 5s of report time.</li>
+</ul></li>
+<li>.uninetflow
+<ul>
+<li>Argus text file with unidirectional flows. Report time 5 secs. TAB as column separator.</li>
+</ul></li>
+</ul>
+<h1 id="ip-addresses">IP Addresses</h1>
+<pre><code>- Infected device: 192.168.1.132
+- Default GW: 192.168.1.1
+- Public IP: 147.32.82.200</code></pre>
+<h1 id="generic-dataset-name-ctu-honeypot-capture-4-1">Generic Dataset name: CTU-Honeypot-Capture-4-1</h1>
+<h1 id="origin-device-philips-hue">Origin device: Philips Hue</h1>
+<h1 id="timeline">Timeline</h1>
+<h2 id="start.-20181025">Start. 2018/10/25</h2>
+<h2 id="thu-oct-25-141600-cest-2018">Thu Oct 25 14:16:00 CEST 2018</h2>
+<p>Capturing traffic again. The camera has new IP address</p>
+<p>##Mon Dec 14 19:19:28 CET 2020 Stop for maintenace</p>
+<p>##Tue Dec 15 17:41:39 CET 2020 Power on again</p>
+<p>##Thu Jan 14 15:27:44 CET 2021 Network restored</p>
+<h1 id="disclaimer">Disclaimer</h1>
+<p>These files were generated in the Stratosphere Laboratory as part of the Aposemat Project for collecting IoT malware captures with the support of Avast Software.Done in the CVUT University, Prague, Czech Republic. The goal is to store long-lived real iot malware traffic and to generate labeled netflows files. Any question feel free to contact us at: Sebastian Garcia: sebastian.garcia@agents.fel.cvut.cz</p>
+<p>You need authorization from the Stratosphere Lab to use these files.</p>
+<h1 id="suricata-run-with-rules-updated-on-2021-03-09">Suricata run with rules updated on 2021-03-09</h1>
+</body></html>

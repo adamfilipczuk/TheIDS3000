@@ -1,0 +1,49 @@
+
+[*] PassiveDNS 1.2.0
+[*] By Edward Bjarte Fjellskål <edward.fjellskaal@gmail.com>
+[*] Using libpcap version 1.9.1 (with TPACKET_V3)
+[*] Using ldns version 1.6.17
+[*] Reading from file 2018-10-25-14-06-32-192.168.1.132.pcap
+
+1540469831.302129||192.168.1.132||192.168.1.1||IN||www2.meethue.com.||CNAME||brands.lighting.philips.com.edgekey.net.||300||1
+1540469831.302129||192.168.1.132||192.168.1.1||IN||brands.lighting.philips.com.edgekey.net.||CNAME||e15361.b.akamaiedge.net.||4540||1
+1540469831.302129||192.168.1.132||192.168.1.1||IN||e15361.b.akamaiedge.net.||A||2.16.60.82||20||1
+1540469831.302129||192.168.1.132||192.168.1.1||IN||e15361.b.akamaiedge.net.||A||2.16.60.139||20||1
+1540472524.847650||192.168.1.132||192.168.1.1||IN||dcp.dc1.philips.com.||CNAME||dc1-elb-60-1305627412.eu-west-1.elb.amazonaws.com.||300||1
+1540472524.852147||192.168.1.132||192.168.1.1||IN||dc1-elb-60-1305627412.eu-west-1.elb.amazonaws.com.||A||52.209.221.67||60||1
+1540472524.852147||192.168.1.132||192.168.1.1||IN||dc1-elb-60-1305627412.eu-west-1.elb.amazonaws.com.||A||52.215.95.120||60||1
+1540483327.010886||192.168.1.132||192.168.1.1||IN||diagnostics.meethue.com.||A||130.211.67.12||3600||1
+1540518439.810404||192.168.1.132||192.168.1.1||IN||e15361.b.akamaiedge.net.||A||2.21.172.138||20||1
+1540518439.810404||192.168.1.132||192.168.1.1||IN||e15361.b.akamaiedge.net.||A||23.6.113.185||20||1
+1540540925.375782||192.168.1.132||192.168.1.1||IN||www.ecdinterface.philips.com.||CNAME||dp.dc1.philips.com.||300||1
+1540540925.375782||192.168.1.132||192.168.1.1||IN||dp.dc1.philips.com.||CNAME||dc1-elb-52-1014907170.eu-west-1.elb.amazonaws.com.||300||1
+1540540925.381024||192.168.1.132||192.168.1.1||IN||dc1-elb-52-1014907170.eu-west-1.elb.amazonaws.com.||A||52.51.133.171||60||1
+1540540925.381024||192.168.1.132||192.168.1.1||IN||dc1-elb-52-1014907170.eu-west-1.elb.amazonaws.com.||A||52.212.88.21||60||1
+1540544525.092296||192.168.1.132||192.168.1.1||IN||dcp.dc1.philips.com.||CNAME||dc1-elb-60-1305627412.eu-west-1.elb.amazonaws.com.||300||85
+1540547242.647009||192.168.1.132||192.168.1.1||IN||e15361.b.akamaiedge.net.||A||2.16.60.139||20||85
+1540547242.647009||192.168.1.132||192.168.1.1||IN||e15361.b.akamaiedge.net.||A||2.16.60.82||20||77
+1540540925.631880||192.168.1.132||192.168.1.1||IN||dp.dc1.philips.com.||CNAME||dc1-elb-52-1014907170.eu-west-1.elb.amazonaws.com.||300||5
+1540540925.631880||192.168.1.132||192.168.1.1||IN||www.ecdinterface.philips.com.||CNAME||dp.dc1.philips.com.||300||5
+1540544525.092296||192.168.1.132||192.168.1.1||IN||dc1-elb-60-1305627412.eu-west-1.elb.amazonaws.com.||A||52.215.95.120||60||42
+1540544525.092296||192.168.1.132||192.168.1.1||IN||dc1-elb-60-1305627412.eu-west-1.elb.amazonaws.com.||A||52.209.221.67||60||42
+1540540925.631880||192.168.1.132||192.168.1.1||IN||dc1-elb-52-1014907170.eu-west-1.elb.amazonaws.com.||A||52.212.88.21||60||2
+1540540925.631880||192.168.1.132||192.168.1.1||IN||dc1-elb-52-1014907170.eu-west-1.elb.amazonaws.com.||A||52.51.133.171||60||2
+1540547242.647009||192.168.1.132||192.168.1.1||IN||brands.lighting.philips.com.edgekey.net.||CNAME||e15361.b.akamaiedge.net.||21600||86
+1540547242.647009||192.168.1.132||192.168.1.1||IN||www2.meethue.com.||CNAME||brands.lighting.philips.com.edgekey.net.||300||86
+1540545547.512695||192.168.1.132||192.168.1.1||IN||diagnostics.meethue.com.||A||130.211.67.12||3600||7
+
+-- Total DNS records allocated            :           9
+-- Total DNS assets allocated             :          14
+-- Total DNS packets over IPv4/TCP        :           0
+-- Total DNS packets over IPv6/TCP        :           0
+-- Total DNS packets over TCP decoded     :           0
+-- Total DNS packets over TCP failed      :           0
+-- Total DNS packets over IPv4/UDP        :         191
+-- Total DNS packets over IPv6/UDP        :           0
+-- Total DNS packets over UDP decoded     :         191
+-- Total DNS packets over UDP failed      :           0
+-- Total packets received from libpcap    :         382
+-- Total Ethernet packets received        :         382
+-- Total VLAN packets received            :           0
+
+[*] passivedns ended.
