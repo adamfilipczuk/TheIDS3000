@@ -1,10 +1,10 @@
 # Suricata-TCPReplay
 
-This Docker container integrates **Suricata** and **tcpreplay** to enable live packet replay and analysis by Suricata. Managed by `docker-compose`, the container is designed for ease of use and system compatibility. It provides basic variables for configuring `tcpreplay` and exposes Suricata's logs for investigation.
+This Docker container integrates **Suricata** and **tcpreplay** to enable live packet replay and analysis by Suricata. Managed by `docker-compose`, the container is designed for ease of use and system compatibility. It provides basic variables for configuring `tcpreplay` and `suricata`, and exposes Suricata's logs for investigation.
 
 ## Installation and Setup (WSL/Ubuntu)
 
-This system was developed and tested using **Windows Subsystem for Linux (WSL)** with **Ubuntu**. These instructions are tailored for WSL and Ubuntu environments. To install WSL, use the command `wsl --install` or refer to the official [WSL Installation Instructions](https://learn.microsoft.com/en-us/windows/wsl/install).
+This system was developed using **Windows Subsystem for Linux (WSL)** with **Ubuntu**. These instructions are tailored for WSL and Ubuntu environments. To install WSL, use the command `wsl --install` or refer to the official [WSL Installation Instructions](https://learn.microsoft.com/en-us/windows/wsl/install).
 
 ---
 
@@ -21,7 +21,7 @@ This system was developed and tested using **Windows Subsystem for Linux (WSL)**
 
 After installation, clone this repository. From within the `suricata-tcpreplay` folder, follow these steps:
 
-1.  **Provide a Packet Capture:** Place a `.pcap` file in the `./captures` directory. The default file name is `capture.pcap`.
+1.  **Provide a Packet Capture:** Place a `.pcap` file in the `./captures` directory. The default file name to be provided is `capture.pcap`.
 
 2.  **Start the Container:** Run the following command to start Suricata and tcpreplay with the default settings:
     ```bash
@@ -35,21 +35,17 @@ After installation, clone this repository. From within the `suricata-tcpreplay` 
 
 You can customize Suricata and tcpreplay settings using **environment variables**. This can be done by editing the `compose.yaml` file or by setting the variables at runtime.
 
-## Environment Variables and Advanced Configuration
-
-You can use environment variables to configure **Suricata** and **tcpreplay** by editing `compose.yaml` or by running with environment variables set at runtime.
-
 ### Suricata Variables
 
 * **`SURICATA_RULES`**: Specifies a path to a custom `.rules` file. The file must be placed in the `./suricata` folder.
     
-    ```bash
+    ```compose.yaml
     - SURICATA_RULES=./suricata/xyz.rules
     ```
 
 * **`SURICATA_CONF`**: Specifies a path to a custom `.yaml` configuration file. The file must be placed in the `./suricata` folder.
     
-    ```bash
+    ```compose.yaml
     - SURICATA_CONF=./suricata/xyz.yaml
     ```
 
@@ -57,20 +53,20 @@ You can use environment variables to configure **Suricata** and **tcpreplay** by
 
 * **`LOOPS`**: Specifies the maximum number of packet replay loops before `tcpreplay` shuts down. This is a standard integer with a default value of `10`.
     
-    ```bash
+    ```compose.yaml
     - LOOPS=10
     ```
 
 * **`SPEED`**: Specifies the replay speed multiplier. This is a decimal with a default value of `15.0` (fifteen times real-time speed).
     
-    ```bash
+    ```compose.yaml
     - SPEED=15.0
     ```
 
 * **`FILENAME`**: Specifies the path to a custom `.pcap` file. The file must be placed in the `./captures` folder with the format `./captures/xyz.pcap`.
     
-    ```bash
-    - FILENAME=capture.pcap
+    ```compose.yaml
+    - FILENAME=./captures/capture.pcap
     ```
 
 ---
