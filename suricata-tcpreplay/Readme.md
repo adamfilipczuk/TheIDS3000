@@ -19,7 +19,7 @@ Place a .pcap file in ./captures. By default the capture should be labelled 'cap
  
 This will run Suricata and tcpreplay with preprogrammed settings. You may access the suricata logs, importantly the eve.json file, from ./suricata.
 
-##Environment variables and advanced configuration
+###Environment variables and advanced configuration
 
 You may use environment variables to configure Suricata and tcpreplay by editing `compose.yaml` or by running with environment variables set at runtime.
 
