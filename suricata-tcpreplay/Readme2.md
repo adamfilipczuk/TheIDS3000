@@ -35,12 +35,52 @@ After installation, clone this repository. From within the `suricata-tcpreplay` 
 
 You can customize Suricata and tcpreplay settings using **environment variables**. This can be done by editing the `compose.yaml` file or by setting the variables at runtime.
 
+## Environment Variables and Advanced Configuration
+
+You can use environment variables to configure **Suricata** and **tcpreplay** by editing `compose.yaml` or by running with environment variables set at runtime.
+
 ### Suricata Variables
 
-* **`SURICATA_RULES`**: Specifies a custom `.rules` file path. Place your custom rule file (e.g., `xyz.rules`) in the `./suricata` folder.
-* **`SURICATA_CONF`**: Specifies a custom `.yaml` configuration file path. Place your custom configuration file (e.g., `xyz.yaml`) in the `./suricata` folder.
+* **`SURICATA_RULES`**: Specifies a path to a custom `.rules` file. The file must be placed in the `./suricata` folder.
+    
+    ```bash
+    - SURICATA_RULES=./suricata/xyz.rules
+    ```
 
-**Example:**
+* **`SURICATA_CONF`**: Specifies a path to a custom `.yaml` configuration file. The file must be placed in the `./suricata` folder.
+    
+    ```bash
+    - SURICATA_CONF=./suricata/xyz.yaml
+    ```
+
+### TCPReplay Variables
+
+* **`LOOPS`**: Specifies the maximum number of packet replay loops before `tcpreplay` shuts down. This is a standard integer with a default value of `10`.
+    
+    ```bash
+    - LOOPS=10
+    ```
+
+* **`SPEED`**: Specifies the replay speed multiplier. This is a decimal with a default value of `15.0` (fifteen times real-time speed).
+    
+    ```bash
+    - SPEED=15.0
+    ```
+
+* **`FILENAME`**: Specifies the path to a custom `.pcap` file. The file must be placed in the `./captures` folder with the format `./captures/xyz.pcap`.
+    
+    ```bash
+    - FILENAME=capture.pcap
+    ```
+
+---
+
+### Runtime Configuration Example
+
 ```bash
-- SURICATA_RULES=./suricata/xyz.rules
-- SURICATA_CONF=./suricata/xyz.yaml
+docker compose run \
+-e LOOPS=50 \
+-e SPEED=10.0 \
+-e FILENAME=2018-20-08-19-53-26.pcap \
+-e SURICATA_RULES=/etc/suricata/rules/local.rules \
+suricata-tcpreplay
