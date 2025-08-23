@@ -19,11 +19,11 @@ Place a .pcap file in ./captures. By default the capture should be labelled 'cap
  
 This will run Suricata and tcpreplay with preprogrammed settings. You may access the suricata logs, importantly the eve.json file, from ./suricata.
 
-###Environment variables and advanced configuration
+##Environment variables and advanced configuration
 
 You may use environment variables to configure Suricata and tcpreplay by editing `compose.yaml` or by running with environment variables set at runtime.
 
-###Suricata variables
+##Suricata variables
 
 The SURICATA\_RULES variable specifies a path to a custom .rules file. The custom file must be placed in the suricata folder with a rule format of `./suricata/xyz.rules.`
 
@@ -32,7 +32,7 @@ The SURICATA\_CONF variable specifies a path to a custom .yaml configuration fil
     - SURICATA\_RULES=./suricata/xyz.rules                                         
     - SURICATA\_CONF=./suricata./xyz.yaml                                          
 
-###TCPReplay variables
+##TCPReplay variables
 
 The LOOPS variable specifies the max packet replay loops provided by tcpreplay before it shuts down. This is a standard int with a default of `10`.
 
@@ -44,7 +44,7 @@ The FILENAME variable specifies a path to a custom .pcap file. The custom file m
     - SPEED=15.0
     - FILENAME=capture.pcap     
 
-#Runtime configuration example
+##Runtime configuration example
 
     docker compose run \
     -e LOOPS=50 \
