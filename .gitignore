@@ -27,3 +27,7 @@ Thumbs.db
 
 # --- CrewAI / project-specific temporary files ---
 crew.log
+
+# --- suricata-tcpreplay ignores---
+suricata-tcpreplay/captures/
+suricata-tcpreplay/suricata/
