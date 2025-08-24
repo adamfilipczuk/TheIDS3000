@@ -1,17 +1,18 @@
 research_task:
   description: >
-    Conduct a thorough research about {topic}
-    Make sure you find any interesting and relevant information given
-    the current year is {current_year}.
+    Analyse the packet caputre {event}
+    Gather the most relevant information about {topic} in corrolation with the {event}.
   expected_output: >
-    A list with 10 bullet points of the most relevant information about {topic}
+    A definative warning whether the device is being used to faciliate a DDOS attack as a part of a Botnet from the {event} packet data.
   agent: researcher
 
 reporting_task:
   description: >
-    Review the context you got and expand each topic into a full section for a report.
-    Make sure the report is detailed and contains any and all relevant information.
+    Review the warning from the research task regarding {topic} and {event}.
+    create a concise report on the findings.
   expected_output: >
-    A fully fledged report with the main topics, each with a full section of information.
+    A definative answer recieved from the research task.
+    A report on the findings from the research task that provides a good base for the admin team.
+    Things of intrest such as ET CHAT IRC PONG, ET CHAT IRC USER, ET CHAT IRC NICK, ET CHAT IRC JOIN, ET CHAT IRC QUIT, ET CHAT IRC PRIVMSG, ET CHAT IRC NOTICE, ET CHAT IRC PART, ET CHAT IRC KICK, ET CHAT IRC MODE should be listed considered nessacery.
     Formatted as markdown without '```'
   agent: reporting_analyst
