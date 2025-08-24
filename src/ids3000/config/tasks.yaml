@@ -1,0 +1,42 @@
+#tasks.yaml
+alerts_overview:
+  description: >
+    Create and provide a human-readable overview of the alerts by using a 
+    parsing tool at {filename}.
+  expected_output: >
+    The returns of a python log parser, which is a formatted list of alerts and
+    their categories.
+  agent: suricata_analyst
+
+
+analysis_task:
+  description: >
+    Conduct an analysis of the provided alerts at {filename}, categorising the alerts based
+    on their risk potential as 'high risk,' 'medium risk', 'low risk', or
+    benign. Before making your analysis, you must first read the file using the
+    file_read tool and have parsed the file using the log_parser tool.
+  expected_output: >
+    A full report explaining the nature of the alerts, the nature of the threat
+    (if any), the devices that may be causing the alerts and the human readable
+    overview of the alerts. Format the report as markdown.
+  agent: suricata_analyst
+  output_file: analysis.md
+
+#
+# research_task:
+#   description: >
+#     Conduct a thorough research about {topic}
+#     Make sure you find any interesting and relevant information given
+#     the current year is {current_year}.
+#   expected_output: >
+#     A list with 10 bullet points of the most relevant information about {topic}
+#   agent: researcher
+# 
+# reporting_task:
+#   description: >
+#     Review the context you got and expand each topic into a full section for a report.
+#     Make sure the report is detailed and contains any and all relevant information.
+#   expected_output: >
+#     A fully fledged report with the main topics, each with a full section of information.
+#     Formatted as markdown without '```'
+#   agent: reporting_analyst
