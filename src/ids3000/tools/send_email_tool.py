@@ -33,7 +33,7 @@ HOST = "smtp.gmail.com"
 PORT = 465
 
 FROM_EMAIL = "notification.ids3000@gmail.com"
-TO_EMAIL = "email@email.com"
+TO_EMAIL = "notification.ids3000@gmail.com"
 PASSWORD = os.getenv("gmail_app_password")
 
 MESSAGEBASE =f"""Subject: Notification from IDS3000

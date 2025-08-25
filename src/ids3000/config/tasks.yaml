@@ -1,20 +1,17 @@
 #tasks.yaml
-alerts_overview:
-  description: >
-    Create and provide a human-readable overview of the alerts by using a 
-    parsing tool at {filename}.
-  expected_output: >
-    The returns of a python log parser, which is a formatted list of alerts and
-    their categories.
-  agent: suricata_analyst
 
+observe_task: 
+  description: >
+    Watch and listen for events returned from the observe tool. Once an event or multiple events have been communicated pass them to the analysis_task for further action.
+  expected_output: >
+    events as they are provided from the tool are to be passed to the analysis_task
+  agent: observer_agent
 
 analysis_task:
   description: >
-    Conduct an analysis of the provided alerts at {filename}, categorising the alerts based
+    Conduct an analysis of the provided alerts from observe_task, categorising the alerts based
     on their risk potential as 'high risk,' 'medium risk', 'low risk', or
-    benign. Before making your analysis, you must first read the file using the
-    file_read tool and have parsed the file using the log_parser tool.
+    benign. 
   expected_output: >
     A full report explaining the nature of the alerts, the nature of the threat
     (if any), the devices that may be causing the alerts and the human readable
@@ -26,7 +23,7 @@ email_task:
   description: >
     Send the report as plain text using the send_email tool
   expected_output: >
-    The report in plain text sent to send_email tool
+    The report from analysis_task in plain text sent to send_email tool. Not in JSON just plain text.
   agent: email_agent
 
 #

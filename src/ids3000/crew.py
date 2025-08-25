@@ -3,7 +3,7 @@ from crewai.project import CrewBase, agent, crew, task
 from crewai.agents.agent_builder.base_agent import BaseAgent
 from typing import List
 from crewai_tools import (FileReadTool, DirectoryReadTool) # type: ignore
-from .tools import custom_tool,send_email_tool
+from .tools import custom_tool,send_email_tool, observer_tool
 
 # If you want to run a snippet of code before or after the crew starts,
 # you can use the @before_kickoff and @after_kickoff decorators
@@ -14,6 +14,7 @@ log_parser=custom_tool.LogParserTool()
 file_read = FileReadTool(file_path='./knowledge/eve.json')
 directory_read = DirectoryReadTool()
 send_email = send_email_tool.send_emailTool()
+observerTool = observer_tool.observer_toolTool()
 
 @CrewBase
 class Ids3000():
@@ -23,11 +24,19 @@ class Ids3000():
     tasks: List[Task]
 
     @agent
+    def observer_agent(self) -> Agent:
+        return Agent(
+            config=self.agents_config['observer_agent'], # type: ignore[index]
+            verbose=True,
+            tools=[observerTool]
+        )
+
+    @agent
     def suricata_analyst(self) -> Agent:
         return Agent(
             config=self.agents_config['suricata_analyst'], # type: ignore[index]
             verbose=True,
-            tools=[log_parser, file_read, directory_read]
+            tools=[]
         )
     
     @agent
@@ -47,9 +56,9 @@ class Ids3000():
     #     )
 
     @task
-    def alerts_overview(self) -> Task:
+    def observe_task(self) -> Task:
         return Task(
-            config=self.tasks_config['alerts_overview'], #type: ignore[index]
+            config=self.tasks_config['observe_task']
         )
 
     @task
