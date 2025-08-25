@@ -2,8 +2,9 @@ from crewai import Agent, Crew, Process, Task
 from crewai.project import CrewBase, agent, crew, task
 from crewai.agents.agent_builder.base_agent import BaseAgent
 from typing import List
-from crewai_tools import (FileReadTool, DirectoryReadTool)
-from .tools import custom_tool
+from crewai_tools import (FileReadTool, DirectoryReadTool) # type: ignore
+from .tools import custom_tool,send_email_tool
+
 # If you want to run a snippet of code before or after the crew starts,
 # you can use the @before_kickoff and @after_kickoff decorators
 # https://docs.crewai.com/concepts/crews#example-crew-class-with-decorators
@@ -12,6 +13,7 @@ from .tools import custom_tool
 log_parser=custom_tool.LogParserTool()
 file_read = FileReadTool(file_path='./knowledge/eve.json')
 directory_read = DirectoryReadTool()
+send_email = send_email_tool.send_emailTool()
 
 @CrewBase
 class Ids3000():
@@ -26,6 +28,14 @@ class Ids3000():
             config=self.agents_config['suricata_analyst'], # type: ignore[index]
             verbose=True,
             tools=[log_parser, file_read, directory_read]
+        )
+    
+    @agent
+    def email_agent(self) -> Agent:
+        return Agent(
+            config=self.agents_config['email_agent'],
+            verbose=True,
+            tools=[send_email]
         )
 
     # @agent
@@ -47,6 +57,12 @@ class Ids3000():
         return Task(
             config=self.tasks_config['analysis_task'], #type: ignore[index]
             output_file='analysis.md'
+        )
+    
+    @task
+    def email_task(self) -> Task:
+        return Task(
+            config=self.tasks_config['email_task'],
         )
 
     @crew
