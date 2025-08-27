@@ -3,6 +3,10 @@ __pycache__/
 *.pyc
 *.pyo
 *.pyd
+src/ids3000/__pycache__/
+*.pyc
+*.pyo
+*.pyd
 
 # --- Virtual environments ---
 .venv/
@@ -29,5 +33,9 @@ Thumbs.db
 crew.log
 
 # --- suricata-tcpreplay ignores---
-suricata-tcpreplay/captures/
-suricata-tcpreplay/suricata/
+suricata-tcpreplay/captures/*
+suricata-tcpreplay/suricata/*
+
+# --- Further changes to .env files ---
+.env
+src/ids3000/tools/.env
