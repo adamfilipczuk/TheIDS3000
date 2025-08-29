@@ -1,5 +1,6 @@
 
-# TheIDS3000
+# TheIDS3000<img width="1536" height="1024" alt="ChatGPT Image Aug 29, 2025, 05_42_09 PM" src="https://github.com/user-attachments/assets/3a08bf25-be9f-4c75-9fc3-2a50b64e49a8" />
+
 AI Agents Enhancing Cybersecurity in Cyber Physical Systems (CPS)
 
 Welcome to the IDS3000 detection and response system. This project leverages agentic AI to provide enhanced responses to network threats.
