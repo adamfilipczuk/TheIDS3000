@@ -1,5 +1,6 @@
 
-# TheIDS3000<img width="1536" height="1024" alt="ChatGPT Image Aug 29, 2025, 05_42_09 PM" src="https://github.com/user-attachments/assets/3a08bf25-be9f-4c75-9fc3-2a50b64e49a8" />
+<img width="1536" height="1024" alt="ChatGPT Image Aug 29, 2025, 05_42_09 PM1" src="https://github.com/user-attachments/assets/abe8771b-0558-4e86-a0b1-591d30552429" />
+
 
 AI Agents Enhancing Cybersecurity in Cyber Physical Systems (CPS)
 
