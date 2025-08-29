@@ -1,10 +1,11 @@
+**<h1>AI Agents Enhancing Cybersecurity in Cyber Physical Systems (CPS)</h1>**
 
 <img width="1536" height="1024" alt="ChatGPT Image Aug 29, 2025, 05_42_09 PM1" src="https://github.com/user-attachments/assets/abe8771b-0558-4e86-a0b1-591d30552429" />
 
 
-AI Agents Enhancing Cybersecurity in Cyber Physical Systems (CPS)
 
-Welcome to the IDS3000 detection and response system. This project leverages agentic AI to provide enhanced responses to network threats.
+
+<h4>Welcome to the IDS3000 detection and response system. This project leverages agentic AI to provide enhanced responses to network threats.</h4>
 
 ## Installation and Setup
 
