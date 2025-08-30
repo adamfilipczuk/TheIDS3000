@@ -1,19 +1,29 @@
-Python Watchdog Installation
-============================
+Python Watchdog + Pygtail Installation
+====================================
 
 Requirements:
 -------------
 - Python 3.6 or higher
 - pip package manager
 
-Install watchdog library:
-------------------------
-pip install watchdog
+Install required libraries:
+---------------------------
+pip install watchdog pygtail
 
-(Optional) If using a virtual environment:
--------------------------------------------
+(Optional) Using a virtual environment:
+----------------------------------------
 python -m venv venv
-# Activate venv:
-# Linux/macOS: source venv/bin/activate
-# Windows:    venv\Scripts\activate
-pip install watchdog
+
+Activate virtual environment:
+- Linux/macOS:
+  source venv/bin/activate
+- Windows:
+  venv\Scripts\activate
+
+Install libraries inside virtual environment:
+---------------------------------------------
+pip install watchdog pygtail
+
+Notes:
+------
+This setup allows you to use Watchdog for file system monitoring and Pygtail for reading log files incrementally.

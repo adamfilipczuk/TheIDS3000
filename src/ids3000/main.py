@@ -1,52 +1,41 @@
 #!/usr/bin/env python
 import sys
 import warnings
-
+import time
+import queue
+import socket
+import threading
 from datetime import datetime
-
 from ids3000.crew import Ids3000
 
 warnings.filterwarnings("ignore", category=SyntaxWarning, module="pysbd")
+
+data_queue = queue.Queue()
+
+HOST = "127.0.0.1"
+PORT = 65432
 
 # This main file is intended to be a way for you to run your
 # crew locally, so refrain from adding unnecessary logic into this file.
 # Replace with inputs you want to test with, it will automatically
 # interpolate any tasks and agents information
 
-
-#this neeeds to be put into a tool later to not clutter the main file
-#will be replaced by JSON RAG Search
-def read_file_as_string(file_path, max_lines=None):
-    content = []
-    try:
-        with open(file_path, 'r') as file:
-            for i, line in enumerate(file):
-                if max_lines is None or i >= max_lines:
-                    break
-                content.append(line.rstrip("\n"))
-    except FileNotFoundError:
-        print(f"The file at {file_path} was not found.")
-    except Exception as e:
-        print(f"An error occurred: {e}")
-    return "\n".join(content)
-
-
-dummy_event = read_file_as_string('eve.json', 100)
-
 def run():
     """
     Run the crew.
     """
+
+    print("Waiting for data...")
     inputs = {
         'topic': 'Mirai Botnet Detection & DDOS Classification',
-        'event': dummy_event,
+        'event': data_queue.get(), #this is blocking which is ok because we will be waiting for chunks of data regardless 
         'current_year': str(datetime.now().year)
     }
-    
     try:
         Ids3000().crew().kickoff(inputs=inputs)
     except Exception as e:
         raise Exception(f"An error occurred while running the crew: {e}")
+    finished = True
 
 
 def train():
@@ -87,3 +76,31 @@ def test():
 
     except Exception as e:
         raise Exception(f"An error occurred while testing the crew: {e}")
+
+
+#need to make it non-blocking
+def socket_listener():
+    global data_queue
+    with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
+        s.bind((HOST, PORT))
+        s.listen()
+        while True:
+            conn, addr = s.accept()
+            with conn:
+                print(f"Connected by {addr}")
+                data = conn.recv(65432) # receive the chunk from the port
+                if data:
+                    print(f"[NEW DATA] {data.decode('utf-8')}")
+                    data_queue.put(data.decode('utf-8'))
+
+
+threading.Thread(target=socket_listener, daemon=True).start()
+
+while True:
+        run()
+        print("and again")
+
+
+
+    #socket is listening on port 65432
+    #socket is on a seperate thread so it can run in the background
