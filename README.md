@@ -7,6 +7,17 @@
 
 <h4>Welcome to the IDS3000 detection and response system. This project leverages agentic AI to provide enhanced responses to network threats.</h4>
 
+<h4>A brief description of Crewai:</h4>
+
+Developed entirely on its own foundation, CrewAI is a rapid and efficient Python framework that operates without LangChain or comparable frameworks.
+
+
+CrewAI provides developers with an accessible framework that balances ease of use with detailed, low-level customization, making it well-suited for building autonomous AI agents across diverse applications.
+
+• CrewAI Crews: Designed to maximize autonomy and teamwork, allowing developers to build AI groups where each agent is assigned defined roles, tools, and objectives.
+
+• CrewAI Flows: Offer fine-grained, event-based task management, support single LLM calls for precise orchestration, and integrate seamlessly with Crews.
+
 ## Installation and Setup
 
 Ensure you have **Python >=3.10 <3.13** installed on your system, as well as **Docker** and **Docker Compose**. Ubuntu and Debian systems, including WSL may also require `python3.11-venv`.
