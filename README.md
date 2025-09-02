@@ -1,6 +1,6 @@
 **<h1>AI Agents Enhancing Cybersecurity in Cyber Physical Systems (CPS)</h1>**
 
-<img width="1536" height="1024" alt="ChatGPT Image Aug 29, 2025, 05_42_09 PM1" src="https://github.com/user-attachments/assets/abe8771b-0558-4e86-a0b1-591d30552429" />
+<img width="1024" height="700" alt="ChatGPT Image Aug 29, 2025, 05_42_09 PM1" src="https://github.com/user-attachments/assets/abe8771b-0558-4e86-a0b1-591d30552429" />
 
 
 
