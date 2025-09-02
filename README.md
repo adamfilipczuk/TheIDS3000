@@ -7,7 +7,9 @@
 
 <h4>Welcome to the IDS3000 detection and response system. This project leverages agentic AI to provide enhanced responses to network threats.</h4>
 
-<h4>A brief description of Crewai:</h4>
+<img width="375" height="114" alt="crewai-brand-color-2058650934" src="https://github.com/user-attachments/assets/8989944a-3f6b-4469-aad4-364438a4fc69" />
+
+<h4>A brief description of Crewai, Crewai Crews and Crewai Workflows:</h4>
 
 Developed entirely on its own foundation, CrewAI is a rapid and efficient Python framework that operates without LangChain or comparable frameworks.
 
