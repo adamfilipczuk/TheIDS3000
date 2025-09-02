@@ -20,6 +20,8 @@ CrewAI provides developers with an accessible framework that balances ease of us
 
 • CrewAI Flows: Offer fine-grained, event-based task management, support single LLM calls for precise orchestration, and integrate seamlessly with Crews.
 
+If you would like to know more about Crewai and how to use it, visit the Crewai website [here](https://docs.crewai.com/en/introduction).
+
 ## Installation and Setup
 
 Ensure you have **Python >=3.10 <3.13** installed on your system, as well as **Docker** and **Docker Compose**. Ubuntu and Debian systems, including WSL may also require `python3.11-venv`.
