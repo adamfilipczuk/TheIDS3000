@@ -2,9 +2,14 @@ from crewai import Agent, Crew, Process, Task
 from crewai.project import CrewBase, agent, crew, task
 from crewai.agents.agent_builder.base_agent import BaseAgent
 from typing import List
+from .tools import custom_tool,send_email_tool
 # If you want to run a snippet of code before or after the crew starts,
 # you can use the @before_kickoff and @after_kickoff decorators
 # https://docs.crewai.com/concepts/crews#example-crew-class-with-decorators
+
+#Instantiate Tools
+send_email = send_email_tool.send_emailTool()
+
 
 @CrewBase
 class Ids3000():
@@ -23,16 +28,35 @@ class Ids3000():
     def researcher(self) -> Agent:
         return Agent(
             config=self.agents_config['researcher'], # type: ignore[index]
-            verbose=True
+            verbose=False
         )
 
     @agent
     def reporting_analyst(self) -> Agent:
         return Agent(
             config=self.agents_config['reporting_analyst'], # type: ignore[index]
-            verbose=True
+            verbose=False
         )
 
+    # @agent
+    # INSERT INCIDENT RESPONSE
+    # def incident_responder(self) -> Agent:
+    #     return Agent(
+    #         config=self.agents_config['incident_responder'], # type: ignore[index]
+    #         verbose=True,
+    #         tools=[]
+    #     )
+
+    @agent
+    def email_agent(self) -> Agent:
+        return Agent(
+            config=self.agents_config['email_agent'],
+            verbose=False,
+            tools=[send_email]
+        )
+    
+
+    
     # To learn more about structured task outputs,
     # task dependencies, and task callbacks, check out the documentation:
     # https://docs.crewai.com/concepts/tasks#overview-of-a-task
@@ -47,6 +71,12 @@ class Ids3000():
         return Task(
             config=self.tasks_config['reporting_task'], # type: ignore[index]
             output_file='report.md'
+        )
+    
+    @task
+    def email_task(self) -> Task:
+        return Task(
+            config=self.tasks_config['email_task'],
         )
 
     @crew

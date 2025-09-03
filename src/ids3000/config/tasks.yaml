@@ -8,7 +8,7 @@ research_task:
 
 reporting_task:
   description: >
-    Review the warning from the research task regarding {topic} and {event}.
+    Review the warning from the research task regarding {topic} and the event.
     create a concise report on the findings.
   expected_output: >
     A definative answer recieved from the research task.
@@ -16,3 +16,11 @@ reporting_task:
     Things of intrest such as ET CHAT IRC PONG, ET CHAT IRC USER, ET CHAT IRC NICK, ET CHAT IRC JOIN, ET CHAT IRC QUIT, ET CHAT IRC PRIVMSG, ET CHAT IRC NOTICE, ET CHAT IRC PART, ET CHAT IRC KICK, ET CHAT IRC MODE should be listed considered nessacery.
     Formatted as markdown without '```'
   agent: reporting_analyst
+  output_file: analysis.md
+
+email_task:
+  description: >
+    Send the report as plain text using the send_email tool. Convert markdown into plain text. Do not add any json wrappers. The body must be exactly what the report states.
+  expected_output: >
+    The report from analysis_task
+  agent: email_agent

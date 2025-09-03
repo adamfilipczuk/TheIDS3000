@@ -25,7 +25,7 @@ class LoggingEventHandler(FileSystemEventHandler):
     def __init__(self, target_file): #ensuring only to watch the specified file
         self.target_file = os.path.abspath(target_file)
 
-    def on_modified(self, event):
+    def on_any_event(self, event):
         global appends, last_append_time
         if not event.is_directory and os.path.abspath(event.src_path) == self.target_file:
             print("modified") # debug
@@ -57,8 +57,11 @@ def process_buffer():
             data_to_process = []  # clear the local copy after processing
             
 if __name__ == "__main__":
-    path = os.path.abspath(
+    watch_path = os.path.abspath(
     os.path.join("..", "..", "..", "suricata-tcpreplay", "suricata", "eve.json")
+    )
+    path = os.path.abspath(
+    os.path.join("..", "..", "..", "suricata-tcpreplay", "suricata", "eve2.json")
     )
     print(path)
     event_handler = LoggingEventHandler(path)
@@ -71,6 +74,11 @@ if __name__ == "__main__":
     try:
         while True:
             time.sleep(1)  # Sleep to avoid busy waiting
+            for line in Pygtail(watch_path):
+                with open(path, "a") as file:
+                    file.write(line)
+
+
     except KeyboardInterrupt:
         observer.stop()
     observer.join()

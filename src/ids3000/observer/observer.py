@@ -7,6 +7,12 @@ watch_dir = os.path.abspath(
 )
 full_path = os.path.join(watch_dir, file_to_watch)
 
+file_to_write = "eve2.json"
+write_dir = os.path.abspath(
+    os.path.join("..", "..", "..", "suricata-tcpreplay", "suricata")
+)
+full_write_path = os.path.join(watch_dir, file_to_watch)
+
 while True:
     for line in Pygtail(full_path):
         print(f"{file_to_watch} updated: {line}")
