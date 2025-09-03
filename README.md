@@ -24,6 +24,11 @@ If you would like to know more about Crewai and how to use it, visit the Crewai 
 
 ## Installation and Setup
 
+<img width="375" height="200" alt="Docker-Logo-2015-2017-1067899226" src="https://github.com/user-attachments/assets/43d7da2a-69e5-4698-83fa-07506761119f" />       <img width="375" height="200" alt="python-logo-800x500-2157912460" src="https://github.com/user-attachments/assets/52282daf-342a-4095-bb23-fa5c864bb87a" />
+
+
+
+
 Ensure you have **Python >=3.10 <3.13** installed on your system, To check if you have Python3 installed and the version number run the command "python3 --version", also make sure to have **Docker** and **Docker Compose** installed as well, If you don't have Docker installed yet visit the Docker webite [here](https://docs.docker.com/engine/install/) and choose your platform that you are installing Docker on. Ubuntu and Debian systems, including WSL may also require `python3.11-venv`.
 
 To create a virtual environment for running Crewai, and to install basic dependencies; simply run the setup script for your operating system:
@@ -80,6 +85,9 @@ crewai run
 This command initializes the IDS3000 Crew, assembling the agents and assigning them tasks as defined in the configuration.
 
 ### Docker container instructions
+
+<img width="375" height="200" alt="0Z2J8xXd3X0SJuphA-3239266095" src="https://github.com/user-attachments/assets/ff7dc5e7-a454-4014-a7b2-2045cd0c15e1" />
+
 
 The suricata-tcpreplay container integrates **Suricata** and **tcpreplay** to enable live packet replay and analysis. Managed by `docker-compose`, the container is designed for ease of use and system compatibility. It provides basic variables for configuring `tcpreplay` and `suricata`, and exposes Suricata's logs for investigation.
 
