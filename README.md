@@ -24,7 +24,7 @@ If you would like to know more about Crewai and how to use it, visit the Crewai 
 
 ## Installation and Setup
 
-Ensure you have **Python >=3.10 <3.13** installed on your system, as well as **Docker** and **Docker Compose**. Ubuntu and Debian systems, including WSL may also require `python3.11-venv`.
+Ensure you have **Python >=3.10 <3.13** installed on your system, To check if you have Python3 installed and the version number run the command "python3 --version", also make sure to have **Docker** and **Docker Compose** installed as well, If you don't have Docker installed yet visit the Docker webite [here](https://docs.docker.com/engine/install/) and choose your platform that you are installing Docker on. Ubuntu and Debian systems, including WSL may also require `python3.11-venv`.
 
 To create a virtual environment for running Crewai, and to install basic dependencies; simply run the setup script for your operating system:
 
