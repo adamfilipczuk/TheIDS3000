@@ -1,5 +1,2 @@
 uv
 crewai
-watchdog
-flask
-pygtail

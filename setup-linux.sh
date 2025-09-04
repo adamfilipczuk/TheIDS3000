@@ -13,6 +13,8 @@ pip install --upgrade pip
 # Install dependencies
 pip install -r requirements.txt
 
+crewai install
+
 echo "Setup complete. To run the project, activate the environment:"
 echo "	source .venv/bin/activate"
-echo "	python3 src/ids3000/main.py"
+echo "	crewai run"
