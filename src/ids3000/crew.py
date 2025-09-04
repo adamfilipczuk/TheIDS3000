@@ -2,14 +2,10 @@ from crewai import Agent, Crew, Process, Task
 from crewai.project import CrewBase, agent, crew, task
 from crewai.agents.agent_builder.base_agent import BaseAgent
 from typing import List
-from .tools import custom_tool,send_email_tool
-# If you want to run a snippet of code before or after the crew starts,
-# you can use the @before_kickoff and @after_kickoff decorators
-# https://docs.crewai.com/concepts/crews#example-crew-class-with-decorators
+from .tools import send_email_tool
 
 #Instantiate Tools
 send_email = send_email_tool.send_emailTool()
-
 
 @CrewBase
 class Ids3000():
@@ -18,34 +14,19 @@ class Ids3000():
     agents: List[BaseAgent]
     tasks: List[Task]
 
-    # Learn more about YAML configuration files here:
-    # Agents: https://docs.crewai.com/concepts/agents#yaml-configuration-recommended
-    # Tasks: https://docs.crewai.com/concepts/tasks#yaml-configuration-recommended
-    
-    # If you would like to add tools to your agents, you can learn more about it here:
-    # https://docs.crewai.com/concepts/agents#agent-tools
     @agent
-    def researcher(self) -> Agent:
+    def suricata_analyst(self) -> Agent:
         return Agent(
-            config=self.agents_config['researcher'], # type: ignore[index]
+            config=self.agents_config['suricata_analyst'], # type: ignore[index]
             verbose=False
         )
 
     @agent
-    def reporting_analyst(self) -> Agent:
+    def incident_manager(self) -> Agent:
         return Agent(
-            config=self.agents_config['reporting_analyst'], # type: ignore[index]
+            config=self.agents_config['incident_manager'], # type: ignore[index]
             verbose=False
         )
-
-    # @agent
-    # INSERT INCIDENT RESPONSE
-    # def incident_responder(self) -> Agent:
-    #     return Agent(
-    #         config=self.agents_config['incident_responder'], # type: ignore[index]
-    #         verbose=True,
-    #         tools=[]
-    #     )
 
     @agent
     def email_agent(self) -> Agent:
@@ -55,22 +36,16 @@ class Ids3000():
             tools=[send_email]
         )
     
-
-    
-    # To learn more about structured task outputs,
-    # task dependencies, and task callbacks, check out the documentation:
-    # https://docs.crewai.com/concepts/tasks#overview-of-a-task
     @task
-    def research_task(self) -> Task:
+    def suricata_report(self) -> Task:
         return Task(
-            config=self.tasks_config['research_task'], # type: ignore[index]
+            config=self.tasks_config['suricata_report'], # type: ignore[index]
         )
 
     @task
-    def reporting_task(self) -> Task:
+    def incident_planning(self) -> Task:
         return Task(
-            config=self.tasks_config['reporting_task'], # type: ignore[index]
-            output_file='report.md'
+            config=self.tasks_config['incident_planning'], # type: ignore[index]
         )
     
     @task
@@ -82,8 +57,6 @@ class Ids3000():
     @crew
     def crew(self) -> Crew:
         """Creates the Ids3000 crew"""
-        # To learn how to add knowledge sources to your crew, check out the documentation:
-        # https://docs.crewai.com/concepts/knowledge#what-is-knowledge
 
         return Crew(
             agents=self.agents, # Automatically created by the @agent decorator

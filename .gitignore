@@ -39,3 +39,6 @@ suricata-tcpreplay/suricata/*
 # --- Further changes to .env files ---
 .env
 src/ids3000/tools/.env
+
+# --- output files ---
+output/*

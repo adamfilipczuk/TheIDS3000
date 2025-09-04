@@ -1,26 +1,27 @@
-research_task:
+suricata_report:
   description: >
-    Analyse the packet caputre {event}
-    Gather the most relevant information about {topic} in corrolation with the {event}.
+    Examine the provided suricata alerts, and provide a security analysis of the alert content. Consider how the traffic may fit within a wider context and the intentions any threat actor. Label the traffic high, medium or low concern, and provide a recommendation if it warrants further investigation or containment. The alerts are provided here:
+    {event}
   expected_output: >
-    A definative warning whether the device is being used to faciliate a DDOS attack as a part of a Botnet from the {event} packet data.
-  agent: researcher
+    A comprehensive report on the alerts.
+  agent: suricata_analyst
+  markdown: true 
+  output_file: output/suricata_report.md
 
-reporting_task:
+incident_planning:
   description: >
-    Review the warning from the research task regarding {topic} and the event.
-    create a concise report on the findings.
+    Plan a response to the incident based on the analysis provided by the suricata_analyst. Your response should be focused to immediate threat areas, containment and elimination of potential attack vectors in order to restore normal operation. The preservation of evidence should be considered as well. Consider the device, upstream routers and switches, the (sub)network(s) and users on the network.
   expected_output: >
-    A definative answer recieved from the research task.
-    A report on the findings from the research task that provides a good base for the admin team.
-    Things of intrest such as ET CHAT IRC PONG, ET CHAT IRC USER, ET CHAT IRC NICK, ET CHAT IRC JOIN, ET CHAT IRC QUIT, ET CHAT IRC PRIVMSG, ET CHAT IRC NOTICE, ET CHAT IRC PART, ET CHAT IRC KICK, ET CHAT IRC MODE should be listed considered nessacery.
-    Formatted as markdown without '```'
-  agent: reporting_analyst
-  output_file: analysis.md
+    A report for dissemination to incident responders, covering all required points in clear and delineated sections so that responders may access wider context but easily understand their own tasks. 
+  agent: incident_manager 
+  output_file: output/incident_plan.md
+  context: ["suricata_report"]
 
 email_task:
   description: >
-    Send the report as plain text using the send_email tool. Convert markdown into plain text. Do not add any json wrappers. The body must be exactly what the report states.
+    The Suricata Analyst and Incident Planner have created reports on the network activity and any planned responses, please paraphrase this for the non-technical site manager and provide him an update in his email.
   expected_output: >
-    The report from analysis_task
+    An email describing the network incident threat and planned responses, if any. Please also provide a file artifact of the email. 
   agent: email_agent
+  output_file: output/email.txt
+  context: ["suricata_report", "incident_planning"] 

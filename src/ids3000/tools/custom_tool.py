@@ -2,6 +2,7 @@ from crewai.tools import BaseTool
 from typing import Type
 from pydantic import BaseModel, Field
 
+# This is a schema for making custom tools, not currently used in the project.
 
 class MyCustomToolInput(BaseModel):
     """Input schema for MyCustomTool."""
