@@ -29,9 +29,9 @@ If you would like to know more about Crewai and how to use it, visit the Crewai 
 
 
 
-Ensure you have **Python >=3.10 <3.13** installed on your system, To check if you have Python3 installed and the version number run the command "python3 --version", also make sure to have **Docker** and **Docker Compose** installed as well, If you don't have Docker installed yet visit the Docker webite [here](https://docs.docker.com/engine/install/) and choose your platform that you are installing Docker on. Ubuntu and Debian systems, including WSL may also require `python3.11-venv`.
+Ensure you have **Python >=3.10 <3.13**, **Docker** and **Docker Compose** installed on your system. Linux and WSL users may also need `python-venv` and `pip` if they are not installed with python. To checkPython3 is installed and the version number, run the command `python3 --version` or `python --version`. Docker and Compose installation instructions are available at [the Docker](https://docs.docker.com/engine/install/) and [Docker Compose](https://docs.docker.com/compose/install/) installation reference pages.
 
-To create a virtual environment for running Crewai, and to install basic dependencies; simply run the setup script for your operating system:
+To create a virtual environment for running Crewai, and to install further dependencies; simply run the setup script for your operating system:
 
 ### Linux/WSL  
 ```bash
@@ -49,23 +49,31 @@ chmod +x ./setup-mac.sh
 ```PowerShell
 setup.bat
 ```
-Next, activate the virtual environment to install crewai:
+
+### Environment Variables
+
+Add your `OPENAI_API_KEY` or other LLM key into the `.env` file. Most ollama users will need to add the following to their `.env`:
+```
+MODEL=ollama/llama3
+API_BASE=http://localhost:11434
+```
+See CrewAI's [LLM reference page](https://docs.crewai.com/en/concepts/llms) for more info and examples for other LLM configurations.
+
+Add an app password for the gmail mail sending tool with the format `gmail_app_password = "your app password"` to the `.env` file. See [Gmail - Sign in with app passwords](https://support.google.com/mail/answer/185833?hl=en) for more info on app passwords.
+
+
+Next, activate the virtual environment for crewai:
 
 ### Linux/WSL/MacOS  
 ```bash
 source .venv/bin/activate
-crewai install
 ```
 
 ### Windows  
 ```PowerShell
-.\.venv\Scripts\activate
-crewai install
+call .\.venv\Scripts\activate
 ```
 
-### Environment Variables
-
-**Add your `OPENAI_API_KEY` or other LLM key into the `.env` file**
 
 ## Running the Project
 
@@ -73,15 +81,14 @@ To kickstart your crew of AI agents and begin task execution, run this from the 
 
 ### Linux/WSL/MacOS  
 ```bash
-source .venv/bin/activate
 crewai run
 ```
 
 ### Windows  
 ```PowerShell
-.\.venv\Scripts\activate
 crewai run
 ```
+
 This command initializes the IDS3000 Crew, assembling the agents and assigning them tasks as defined in the configuration.
 
 ### Docker container instructions
