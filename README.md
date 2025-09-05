@@ -29,7 +29,7 @@ If you would like to know more about Crewai and how to use it, visit the Crewai 
 
 
 
-Ensure you have **Python >=3.10 <3.13**, **Docker** and **Docker Compose** installed on your system. Linux and WSL users may also need `python-venv` and `pip` if they are not installed with python. To checkPython3 is installed and the version number, run the command `python3 --version` or `python --version`. Docker and Compose installation instructions are available at [the Docker](https://docs.docker.com/engine/install/) and [Docker Compose](https://docs.docker.com/compose/install/) installation reference pages.
+Ensure you have **Python >=3.10 <3.13**, **Docker** and **Docker Compose** installed on your system. Linux and WSL users may also need `python-venv` and `pip` if they are not installed with python. To check Python3 is installed and the version number, run the command `python3 --version` or `python --version`. Docker and Compose installation instructions are available at [the Docker](https://docs.docker.com/engine/install/) and [Docker Compose](https://docs.docker.com/compose/install/) installation reference pages.
 
 To create a virtual environment for running Crewai, and to install further dependencies; simply run the setup script for your operating system:
 
@@ -77,7 +77,7 @@ call .\.venv\Scripts\activate
 
 ## Running the Project
 
-To kickstart your crew of AI agents and begin task execution, run this from the root folder of your project:
+To kickstart your crew of AI agents, run this from the root folder of your project:
 
 ### Linux/WSL/MacOS  
 ```bash
@@ -91,10 +91,32 @@ crewai run
 
 This command initializes the IDS3000 Crew, assembling the agents and assigning them tasks as defined in the configuration.
 
+### Alert tracking
+
+To start tracking Suricata alerts, first activate the virtual environment as described in the project setup section, then navigate to `./src/ids3000/alert_tracker/` and run the alert tracking tool:
+
+### Linux/WSL
+```bash
+python3 alert_tracker.py
+```
+
+### MacOS 
+```bash
+python alert_tracker.py
+```
+
+### Windows 
+```powershell
+python alert_tracker.py
+```
+
 ### Docker container instructions
 
-<img width="375" height="200" alt="0Z2J8xXd3X0SJuphA-3239266095" src="https://github.com/user-attachments/assets/ff7dc5e7-a454-4014-a7b2-2045cd0c15e1" />
+To give your agents something to work with, in a separate terminal, navigate to the `suricata-tcpreplay` folder, create a folder labelled `captures` and provide a packet capture labelled `capture.pcap` for the system to analyse. To build and start the container simply run `docker compose up`. 
 
+Detailed instructions are found below.
+
+<img width="375" height="200" alt="0Z2J8xXd3X0SJuphA-3239266095" src="https://github.com/user-attachments/assets/ff7dc5e7-a454-4014-a7b2-2045cd0c15e1" />
 
 The suricata-tcpreplay container integrates **Suricata** and **tcpreplay** to enable live packet replay and analysis. Managed by `docker-compose`, the container is designed for ease of use and system compatibility. It provides basic variables for configuring `tcpreplay` and `suricata`, and exposes Suricata's logs for investigation.
 
