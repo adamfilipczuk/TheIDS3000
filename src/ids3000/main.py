@@ -2,6 +2,7 @@
 import sys
 import warnings
 import threading
+import os
 from datetime import datetime
 from ids3000.crew import Ids3000
 from ids3000.socket_listener import socket_listener, data_queue
@@ -21,6 +22,10 @@ def run():
         'event': data_queue.get(), #this is blocking which is ok because we will be waiting for chunks of data regardless 
         'current_year': str(datetime.now().year)
     }
+    output_path = os.path.abspath(os.path.join(os.path.dirname(__file__), '..', '..', 'output', 'data_queue.json'))
+    os.makedirs(os.path.dirname(output_path), exist_ok=True)
+    with open(output_path, 'w') as f:
+        f.write(inputs['event'])
     try:
         Ids3000().crew().kickoff(inputs=inputs)
     except Exception as e:
