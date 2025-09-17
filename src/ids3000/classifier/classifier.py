@@ -16,7 +16,8 @@ import json
 #
 #
 
-# 1. TO DO Update to include windows
+
+# LOAD MODEL AND CLASSIFIER 
 model_dir = pathlib.Path("./saved_model")
 
 preprocessor = tf.keras.models.load_model(
@@ -31,13 +32,11 @@ input_map   = dict(zip(input_names, preprocessor.inputs))
 numeric_features = [n for n, t in input_map.items() if t.dtype == tf.float32]
 string_features  = [n for n, t in input_map.items() if t.dtype == tf.string]
 
-print("\n Model expects the following feature groups \n")
-print(f"numeric ({len(numeric_features)}): {numeric_features[:5]}")
-print(f"string  ({len(string_features)}): {string_features[:5]}\n")
 
+# Make a tensorflow feature dictionary 
 
 def make_tf_feature_dict(raw_dict: dict) -> dict:
-    """Convert raw python values → tf.Tensors of shape (1,) with the correct dtype."""
+    #Convert raw python values → tf.Tensors of shape (1,) with the correct dtype.
     tf_dict = {}
     # numeric dictionary
     for name in numeric_features:
@@ -51,6 +50,7 @@ def make_tf_feature_dict(raw_dict: dict) -> dict:
 
     return tf_dict
 
+# Run probability 
 
 def run_prob(features_tf):
     dense_vec   = preprocessor(features_tf)
@@ -60,53 +60,66 @@ def run_prob(features_tf):
     threshold   = 0.5
     pred_label  = int(probability >= threshold)
 
-    print(f"Malicious probability = {probability:.4f}")
-    print(f"Predicted label       = {pred_label} (0 = benign, 1 = malicious)\n\n")
+    return({"Malicious probability:": round(probability, 4),
+           "Predicted label ":pred_label})
 
+# Classify eve.json alerts
 
-# 2. Allow input from crewAI or pre crewai running. 
+def classify_eve(data):
 
-f = open("./data/eve.json", "r")
-# def classify_eve(data):
-#     classified_data = []
+    split_data = data.splitlines()
+    classified_data = []
+    print(len(split_data))
 
-for a in range(0,5):
-    obj=json.loads(f.readline())
-    # print(obj['event_type'])
-    
-    if(obj.get('event_type')!="stats"):
-        flow = obj.get("flow")
-        service = obj.get("metadata", {}).get("flowbits")
+    for a in range(len(split_data)):
+        obj=json.loads(split_data[a])
+        # print(obj['event_type'])
 
-        flow_dict = {}
-        if service is not None and "http.dottedquadhost" in service:
-            service = "http"
-        elif service is not None and "is_proto_irc" in service:
-            service = 'irc'
-        else:
-            service = '-'
         
-        if(flow):
-            #print(flow)
-            flow_dict = {
-                'id.orig_p': int(flow.get("src_port") or 0), 
-                'id.resp_p': int(flow.get("dest_port") or 0), 
-                'orig_pkts': int(flow.get("pkts_toserver") or 0), 
-                'resp_pkts': int(flow.get("pkts_toclient") or 0), 
-                'orig_ip_bytes': int(flow.get("bytes_toserver") or 0), 
-                'resp_ip_bytes': int(flow.get("bytes_toclient") or 0), 
-                'proto': str(obj.get("proto").lower()), 
-                'service': str(service), 
-                'id.resp_h': str(flow.get("dest_ip")), 
-                'id.orig_h': str(flow.get("src_ip"))
-                }
-            if flow_dict.get("id.orig_p") != None:
-                print(flow_dict)
-                tf_dict = make_tf_feature_dict(flow_dict)
-                run_prob(tf_dict)
-    else:
-        print(f"\nIncompatible for classification:\n {a}")
+        if(obj.get('event_type')!="stats"):
+            flow = obj.get("flow")
+            service = obj.get("metadata", {}).get("flowbits")
 
-    
+            flow_dict = {}
+            if service is not None and "http.dottedquadhost" in service:
+                service = "http"
+            elif service is not None and "is_proto_irc" in service:
+                service = 'irc'
+            else:
+                service = '-'
+            
+            if(flow):
+                #print(flow)
+                flow_dict = {
+                    'id.orig_p': int(flow.get("src_port") or 0), 
+                    'id.resp_p': int(flow.get("dest_port") or 0), 
+                    'orig_pkts': int(flow.get("pkts_toserver") or 0), 
+                    'resp_pkts': int(flow.get("pkts_toclient") or 0), 
+                    'orig_ip_bytes': int(flow.get("bytes_toserver") or 0), 
+                    'resp_ip_bytes': int(flow.get("bytes_toclient") or 0), 
+                    'proto': str(obj.get("proto").lower()), 
+                    'service': str(service), 
+                    'id.resp_h': str(flow.get("dest_ip")), 
+                    'id.orig_h': str(flow.get("src_ip"))
+                    }
+                if flow_dict.get("id.orig_p") != None:
+                    print(flow_dict)
+                    tf_dict = make_tf_feature_dict(flow_dict)
+                    classified_data.append({"Probability Classification: ": run_prob(tf_dict), "Original Alert": obj})
+        else:
+            classified_data.append({"Original Alert": obj, "Probability Classification: ": "Not Available"})
 
-    # return classified_data
+        
+        
+    return classified_data
+
+eveData = """{"timestamp":"2025-08-24T01:18:28.371524+0000","flow_id":942445250025987,"in_iface":"eth0","event_type":"alert","src_ip":"185.244.25.235","src_port":6667,"dest_ip":"192.168.1.195","dest_port":48986,"proto":"TCP","ip_v":4,"pkt_src":"wire/pcap","metadata":{"flowbits":["is_proto_irc"]},"alert":{"action":"allowed","gid":1,"signature_id":2000355,"rev":6,"signature":"ET CHAT IRC authorization message","category":"Misc activity","severity":3,"metadata":{"created_at":["2010_07_30"],"signature_severity":["Informational"],"updated_at":["2024_03_17"]}},"app_proto":"failed","direction":"to_client","flow":{"pkts_toserver":24,"pkts_toclient":15,"bytes_toserver":1826,"bytes_toclient":6891,"start":"2025-08-24T01:18:27.809254+0000","src_ip":"192.168.1.195","dest_ip":"185.244.25.235","src_port":48986,"dest_port":6667}}
+{"timestamp":"2025-08-24T01:18:30.961444+0000","event_type":"stats","stats":{"uptime":24,"capture":{"kernel_packets":712,"kernel_drops":0,"errors":0,"afpacket":{"busy_loop_avg":0,"polls":1210,"poll_signal":0,"poll_timeout":1154,"poll_data":56,"poll_errors":0,"send_errors":0}},"decoder":{"pkts":714,"bytes":396630,"invalid":0,"ipv4":694,"ipv6":0,"ethernet":714,"arp":20,"unknown_ethertype":0,"chdlc":0,"raw":0,"null":0,"sll":0,"sll2":0,"tcp":676,"udp":18,"sctp":0,"esp":0,"icmpv4":0,"icmpv6":0,"ppp":0,"pppoe":0,"geneve":0,"gre":0,"vlan":0,"vlan_qinq":0,"vlan_qinqinq":0,"vxlan":0,"vntag":0,"ieee8021ah":0,"teredo":0,"ipv4_in_ipv4":0,"ipv6_in_ipv4":0,"ipv4_in_ipv6":0,"ipv6_in_ipv6":0,"mpls":0,"avg_pkt_size":555,"max_pkt_size":1514,"max_mac_addrs_src":0,"max_mac_addrs_dst":0,"erspan":0,"nsh":0,"event":{"afpacket":{"trunc_pkt":0},"ipv4":{"pkt_too_small":0,"hlen_too_small":0,"iplen_smaller_than_hlen":0,"trunc_pkt":0,"opt_invalid":0,"opt_invalid_len":0,"opt_malformed":0,"opt_pad_required":0,"opt_eol_required":0,"opt_duplicate":0,"opt_unknown":0,"wrong_ip_version":0,"icmpv6":0,"frag_pkt_too_large":0,"frag_overlap":0,"frag_ignored":0},"icmpv4":{"pkt_too_small":0,"unknown_type":0,"unknown_code":0,"ipv4_trunc_pkt":0,"ipv4_unknown_ver":0},"icmpv6":{"unknown_type":0,"unknown_code":0,"pkt_too_small":0,"ipv6_unknown_version":0,"ipv6_trunc_pkt":0,"mld_message_with_invalid_hl":0,"unassigned_type":0,"experimentation_type":0},"ipv6":{"pkt_too_small":0,"trunc_pkt":0,"trunc_exthdr":0,"exthdr_dupl_fh":0,"exthdr_useless_fh":0,"exthdr_dupl_rh":0,"exthdr_dupl_hh":0,"exthdr_dupl_dh":0,"exthdr_dupl_ah":0,"exthdr_dupl_eh":0,"exthdr_invalid_optlen":0,"wrong_ip_version":0,"exthdr_ah_res_not_null":0,"hopopts_unknown_opt":0,"hopopts_only_padding":0,"dstopts_unknown_opt":0,"dstopts_only_padding":0,"rh_type_0":0,"zero_len_padn":0,"fh_non_zero_reserved_field":0,"data_after_none_header":0,"unknown_next_header":0,"icmpv4":0,"frag_pkt_too_large":0,"frag_overlap":0,"frag_invalid_length":0,"frag_ignored":0,"ipv4_in_ipv6_too_small":0,"ipv4_in_ipv6_wrong_version":0,"ipv6_in_ipv6_too_small":0,"ipv6_in_ipv6_wrong_version":0},"tcp":{"pkt_too_small":0,"hlen_too_small":0,"invalid_optlen":0,"opt_invalid_len":0,"opt_duplicate":0},"udp":{"pkt_too_small":0,"hlen_too_small":0,"hlen_invalid":0,"len_invalid":0},"sll":{"pkt_too_small":0},"sll2":{"pkt_too_small":0},"ethernet":{"pkt_too_small":0,"unknown_ethertype":0},"ppp":{"pkt_too_small":0,"vju_pkt_too_small":0,"ip4_pkt_too_small":0,"ip6_pkt_too_small":0,"wrong_type":0,"unsup_proto":0},"pppoe":{"pkt_too_small":0,"wrong_code":0,"malformed_tags":0},"gre":{"pkt_too_small":0,"wrong_version":0,"version0_recur":0,"version0_flags":0,"version0_hdr_too_big":0,"version0_malformed_sre_hdr":0,"version1_chksum":0,"version1_route":0,"version1_ssr":0,"version1_recur":0,"version1_flags":0,"version1_no_key":0,"version1_wrong_protocol":0,"version1_malformed_sre_hdr":0,"version1_hdr_too_big":0},"vlan":{"header_too_small":0,"unknown_type":0,"too_many_layers":0},"ieee8021ah":{"header_too_small":0},"vntag":{"header_too_small":0,"unknown_type":0},"ipraw":{"invalid_ip_version":0},"ltnull":{"pkt_too_small":0,"unsupported_type":0},"sctp":{"pkt_too_small":0},"esp":{"pkt_too_small":0},"mpls":{"header_too_small":0,"pkt_too_small":0,"bad_label_router_alert":0,"bad_label_implicit_null":0,"bad_label_reserved":0,"unknown_payload_type":0},"vxlan":{"unknown_payload_type":0},"geneve":{"unknown_payload_type":0},"erspan":{"header_too_small":0,"unsupported_version":0,"too_many_vlan_layers":0},"dce":{"pkt_too_small":0},"chdlc":{"pkt_too_small":0},"nsh":{"header_too_small":0,"unsupported_version":0,"bad_header_length":0,"reserved_type":0,"unsupported_type":0,"unknown_payload":0}},"too_many_layers":0},"tcp":{"syn":34,"synack":4,"rst":0,"urg":0,"active_sessions":4,"sessions":4,"ssn_memcap_drop":0,"ssn_from_cache":0,"ssn_from_pool":4,"pseudo":0,"invalid_checksum":0,"midstream_pickups":0,"pkt_on_wrong_thread":0,"ack_unseen_data":4,"segment_memcap_drop":0,"segment_from_cache":124,"segment_from_pool":126,"stream_depth_reached":0,"reassembly_gap":2,"overlap":125,"overlap_diff_data":0,"insert_data_normal_fail":0,"insert_data_overlap_fail":0,"urgent_oob_data":0,"memuse":4981088,"reassembly_memuse":1091760},"flow":{"memcap":0,"total":9,"active":9,"tcp":5,"udp":4,"icmpv4":0,"icmpv6":0,"tcp_reuse":0,"elephant":0,"get_used":0,"get_used_eval":0,"get_used_eval_reject":0,"get_used_eval_busy":0,"get_used_failed":0,"wrk":{"spare_sync_avg":100,"spare_sync":5,"spare_sync_incomplete":0,"spare_sync_empty":0,"flows_evicted_needs_work":0,"flows_evicted_pkt_inject":0,"flows_evicted":0,"flows_injected":0,"flows_injected_max":0},"end":{"state":{"new":0,"established":0,"closed":0,"local_bypassed":0,"capture_bypassed":0},"tcp_state":{"none":0,"syn_sent":0,"syn_recv":0,"established":0,"fin_wait1":0,"fin_wait2":0,"time_wait":0,"last_ack":0,"close_wait":0,"closing":0,"closed":0},"tcp_liberal":0},"mgr":{"full_hash_pass":1,"rows_per_sec":6553,"rows_maxlen":1,"flows_checked":5,"flows_notimeout":5,"flows_timeout":0,"flows_evicted":0,"flows_evicted_needs_work":0},"spare":9500,"emerg_mode_entered":0,"emerg_mode_over":0,"recycler":{"recycled":0,"queue_avg":0,"queue_max":0},"memuse":11428608},"defrag":{"ipv4":{"fragments":0,"reassembled":0},"ipv6":{"fragments":0,"reassembled":0},"max_trackers_reached":0,"max_frags_reached":0,"tracker_soft_reuse":0,"tracker_hard_reuse":0,"wrk":{"tracker_timeout":0},"mgr":{"tracker_timeout":0},"memuse":33554432},"flow_bypassed":{"local_pkts":0,"local_bytes":0,"local_capture_pkts":0,"local_capture_bytes":0,"closed":0,"pkts":0,"bytes":0},"detect":{"engines":[{"id":0,"last_reload":"2025-08-24T01:18:14.832866+0000","rules_loaded":44763,"rules_failed":0,"rules_skipped":0}],"alert":6,"alert_queue_overflow":0,"alerts_suppressed":10,"lua":{"errors":0,"blocked_function_errors":0,"instruction_limit_errors":0,"memory_limit_errors":0}},"app_layer":{"flow":{"failed_tcp":1,"http":1,"ftp":0,"smtp":0,"tls":0,"ssh":0,"imap":0,"smb":0,"dcerpc_tcp":0,"dns_tcp":0,"nfs_tcp":0,"ntp":4,"ftp-data":0,"tftp":0,"ike":0,"krb5_tcp":0,"quic":0,"dhcp":0,"sip_tcp":0,"rfb":0,"mqtt":0,"telnet":0,"websocket":0,"ldap_tcp":0,"doh2":0,"rdp":0,"http2":0,"bittorrent-dht":0,"pop3":0,"mdns":0,"snmp":0,"failed_udp":0,"dcerpc_udp":0,"dns_udp":0,"nfs_udp":0,"krb5_udp":0,"sip_udp":0,"ldap_udp":0},"error":{"failed_tcp":{"gap":0},"http":{"gap":0,"alloc":0,"parser":0,"internal":0},"ftp":{"gap":0,"alloc":0,"parser":0,"internal":0},"smtp":{"gap":0,"alloc":0,"parser":0,"internal":0},"tls":{"gap":0,"alloc":0,"parser":0,"internal":0},"ssh":{"gap":0,"alloc":0,"parser":0,"internal":0},"imap":{"gap":0,"alloc":0,"parser":0,"internal":0},"smb":{"gap":0,"alloc":0,"parser":0,"internal":0},"dcerpc_tcp":{"gap":0,"alloc":0,"parser":0,"internal":0},"dns_tcp":{"gap":0,"alloc":0,"parser":0,"internal":0},"nfs_tcp":{"gap":0,"alloc":0,"parser":0,"internal":0},"ntp":{"gap":0,"alloc":0,"parser":0,"internal":0},"ftp-data":{"gap":0,"alloc":0,"parser":0,"internal":0},"tftp":{"gap":0,"alloc":0,"parser":0,"internal":0},"ike":{"gap":0,"alloc":0,"parser":0,"internal":0},"krb5_tcp":{"gap":0,"alloc":0,"parser":0,"internal":0},"quic":{"gap":0,"alloc":0,"parser":0,"internal":0},"dhcp":{"gap":0,"alloc":0,"parser":0,"internal":0},"sip_tcp":{"gap":0,"alloc":0,"parser":0,"internal":0},"rfb":{"gap":0,"alloc":0,"parser":0,"internal":0},"mqtt":{"gap":0,"alloc":0,"parser":0,"internal":0},"telnet":{"gap":0,"alloc":0,"parser":0,"internal":0},"websocket":{"gap":0,"alloc":0,"parser":0,"internal":0},"ldap_tcp":{"gap":0,"alloc":0,"parser":0,"internal":0},"doh2":{"gap":0,"alloc":0,"parser":0,"internal":0},"rdp":{"gap":0,"alloc":0,"parser":0,"internal":0},"http2":{"gap":0,"alloc":0,"parser":0,"internal":0},"bittorrent-dht":{"gap":0,"alloc":0,"parser":0,"internal":0},"pop3":{"gap":0,"alloc":0,"parser":0,"internal":0},"mdns":{"gap":0,"alloc":0,"parser":0,"internal":0},"snmp":{"gap":0,"alloc":0,"parser":0,"internal":0},"dcerpc_udp":{"alloc":0,"parser":0,"internal":0},"dns_udp":{"alloc":0,"parser":0,"internal":0},"nfs_udp":{"alloc":0,"parser":0,"internal":0},"krb5_udp":{"alloc":0,"parser":0,"internal":0},"sip_udp":{"alloc":0,"parser":0,"internal":0},"ldap_udp":{"alloc":0,"parser":0,"internal":0}},"tx":{"http":1,"ftp":0,"smtp":0,"tls":0,"ssh":0,"imap":0,"smb":0,"dcerpc_tcp":0,"dns_tcp":0,"nfs_tcp":0,"ntp":12,"ftp-data":0,"tftp":0,"ike":0,"krb5_tcp":0,"quic":0,"dhcp":0,"sip_tcp":0,"rfb":0,"mqtt":0,"telnet":0,"websocket":0,"ldap_tcp":0,"doh2":0,"rdp":0,"http2":0,"bittorrent-dht":0,"pop3":0,"mdns":0,"snmp":0,"dcerpc_udp":0,"dns_udp":0,"nfs_udp":0,"krb5_udp":0,"sip_udp":0,"ldap_udp":0},"expectations":0},"memcap":{"pressure":8,"pressure_max":8},"http":{"memuse":336,"memcap":0,"byterange":{"memuse":176384,"memcap":104857600}},"ftp":{"memuse":0,"memcap":0},"ippair":{"memuse":406144,"memcap":406144},"host":{"memuse":390144,"memcap":33554432},"file_store":{"open_files":0}}}
+{"timestamp":"2025-08-24T01:18:34.784968+0000","flow_id":942445250025987,"in_iface":"eth0","event_type":"alert","src_ip":"192.168.1.195","src_port":48986,"dest_ip":"185.244.25.235","dest_port":6667,"proto":"TCP","ip_v":4,"pkt_src":"wire/pcap","metadata":{"flowbits":["is_proto_irc"]},"alert":{"action":"allowed","gid":1,"signature_id":2002028,"rev":22,"signature":"ET CHAT IRC PONG response","category":"Misc activity","severity":3,"metadata":{"created_at":["2010_07_30"],"signature_severity":["Informational"],"updated_at":["2024_03_14"]}},"app_proto":"failed","direction":"to_server","flow":{"pkts_toserver":35,"pkts_toclient":22,"bytes_toserver":2663,"bytes_toclient":8624,"start":"2025-08-24T01:18:27.809254+0000","src_ip":"192.168.1.195","dest_ip":"185.244.25.235","src_port":48986,"dest_port":6667}}
+{"timestamp":"2025-08-24T01:18:34.784970+0000","flow_id":942445250025987,"in_iface":"eth0","event_type":"alert","src_ip":"192.168.1.195","src_port":48986,"dest_ip":"185.244.25.235","dest_port":6667,"proto":"TCP","ip_v":4,"pkt_src":"wire/pcap","metadata":{"flowbits":["is_proto_irc"]},"alert":{"action":"allowed","gid":1,"signature_id":2002028,"rev":22,"signature":"ET CHAT IRC PONG response","category":"Misc activity","severity":3,"metadata":{"created_at":["2010_07_30"],"signature_severity":["Informational"],"updated_at":["2024_03_14"]}},"app_proto":"failed","direction":"to_server","flow":{"pkts_toserver":36,"pkts_toclient":22,"bytes_toserver":2754,"bytes_toclient":8624,"start":"2025-08-24T01:18:27.809254+0000","src_ip":"192.168.1.195","dest_ip":"185.244.25.235","src_port":48986,"dest_port":6667}}
+{"timestamp":"2025-08-24T01:18:38.971708+0000","event_type":"stats","stats":{"uptime":32,"capture":{"kernel_packets":750,"kernel_drops":0,"errors":0,"afpacket":{"busy_loop_avg":0,"polls":1694,"poll_signal":0,"poll_timeout":1626,"poll_data":68,"poll_errors":0,"send_errors":0}},"decoder":{"pkts":754,"bytes":399596,"invalid":0,"ipv4":718,"ipv6":0,"ethernet":754,"arp":36,"unknown_ethertype":0,"chdlc":0,"raw":0,"null":0,"sll":0,"sll2":0,"tcp":688,"udp":30,"sctp":0,"esp":0,"icmpv4":0,"icmpv6":0,"ppp":0,"pppoe":0,"geneve":0,"gre":0,"vlan":0,"vlan_qinq":0,"vlan_qinqinq":0,"vxlan":0,"vntag":0,"ieee8021ah":0,"teredo":0,"ipv4_in_ipv4":0,"ipv6_in_ipv4":0,"ipv4_in_ipv6":0,"ipv6_in_ipv6":0,"mpls":0,"avg_pkt_size":529,"max_pkt_size":1514,"max_mac_addrs_src":0,"max_mac_addrs_dst":0,"erspan":0,"nsh":0,"event":{"afpacket":{"trunc_pkt":0},"ipv4":{"pkt_too_small":0,"hlen_too_small":0,"iplen_smaller_than_hlen":0,"trunc_pkt":0,"opt_invalid":0,"opt_invalid_len":0,"opt_malformed":0,"opt_pad_required":0,"opt_eol_required":0,"opt_duplicate":0,"opt_unknown":0,"wrong_ip_version":0,"icmpv6":0,"frag_pkt_too_large":0,"frag_overlap":0,"frag_ignored":0},"icmpv4":{"pkt_too_small":0,"unknown_type":0,"unknown_code":0,"ipv4_trunc_pkt":0,"ipv4_unknown_ver":0},"icmpv6":{"unknown_type":0,"unknown_code":0,"pkt_too_small":0,"ipv6_unknown_version":0,"ipv6_trunc_pkt":0,"mld_message_with_invalid_hl":0,"unassigned_type":0,"experimentation_type":0},"ipv6":{"pkt_too_small":0,"trunc_pkt":0,"trunc_exthdr":0,"exthdr_dupl_fh":0,"exthdr_useless_fh":0,"exthdr_dupl_rh":0,"exthdr_dupl_hh":0,"exthdr_dupl_dh":0,"exthdr_dupl_ah":0,"exthdr_dupl_eh":0,"exthdr_invalid_optlen":0,"wrong_ip_version":0,"exthdr_ah_res_not_null":0,"hopopts_unknown_opt":0,"hopopts_only_padding":0,"dstopts_unknown_opt":0,"dstopts_only_padding":0,"rh_type_0":0,"zero_len_padn":0,"fh_non_zero_reserved_field":0,"data_after_none_header":0,"unknown_next_header":0,"icmpv4":0,"frag_pkt_too_large":0,"frag_overlap":0,"frag_invalid_length":0,"frag_ignored":0,"ipv4_in_ipv6_too_small":0,"ipv4_in_ipv6_wrong_version":0,"ipv6_in_ipv6_too_small":0,"ipv6_in_ipv6_wrong_version":0},"tcp":{"pkt_too_small":0,"hlen_too_small":0,"invalid_optlen":0,"opt_invalid_len":0,"opt_duplicate":0},"udp":{"pkt_too_small":0,"hlen_too_small":0,"hlen_invalid":0,"len_invalid":0},"sll":{"pkt_too_small":0},"sll2":{"pkt_too_small":0},"ethernet":{"pkt_too_small":0,"unknown_ethertype":0},"ppp":{"pkt_too_small":0,"vju_pkt_too_small":0,"ip4_pkt_too_small":0,"ip6_pkt_too_small":0,"wrong_type":0,"unsup_proto":0},"pppoe":{"pkt_too_small":0,"wrong_code":0,"malformed_tags":0},"gre":{"pkt_too_small":0,"wrong_version":0,"version0_recur":0,"version0_flags":0,"version0_hdr_too_big":0,"version0_malformed_sre_hdr":0,"version1_chksum":0,"version1_route":0,"version1_ssr":0,"version1_recur":0,"version1_flags":0,"version1_no_key":0,"version1_wrong_protocol":0,"version1_malformed_sre_hdr":0,"version1_hdr_too_big":0},"vlan":{"header_too_small":0,"unknown_type":0,"too_many_layers":0},"ieee8021ah":{"header_too_small":0},"vntag":{"header_too_small":0,"unknown_type":0},"ipraw":{"invalid_ip_version":0},"ltnull":{"pkt_too_small":0,"unsupported_type":0},"sctp":{"pkt_too_small":0},"esp":{"pkt_too_small":0},"mpls":{"header_too_small":0,"pkt_too_small":0,"bad_label_router_alert":0,"bad_label_implicit_null":0,"bad_label_reserved":0,"unknown_payload_type":0},"vxlan":{"unknown_payload_type":0},"geneve":{"unknown_payload_type":0},"erspan":{"header_too_small":0,"unsupported_version":0,"too_many_vlan_layers":0},"dce":{"pkt_too_small":0},"chdlc":{"pkt_too_small":0},"nsh":{"header_too_small":0,"unsupported_version":0,"bad_header_length":0,"reserved_type":0,"unsupported_type":0,"unknown_payload":0}},"too_many_layers":0},"tcp":{"syn":38,"synack":4,"rst":0,"urg":0,"active_sessions":4,"sessions":4,"ssn_memcap_drop":0,"ssn_from_cache":0,"ssn_from_pool":4,"pseudo":0,"invalid_checksum":0,"midstream_pickups":0,"pkt_on_wrong_thread":0,"ack_unseen_data":4,"segment_memcap_drop":0,"segment_from_cache":126,"segment_from_pool":128,"stream_depth_reached":0,"reassembly_gap":2,"overlap":127,"overlap_diff_data":0,"insert_data_normal_fail":0,"insert_data_overlap_fail":0,"urgent_oob_data":0,"memuse":4981248,"reassembly_memuse":1091760},"flow":{"memcap":0,"total":10,"active":10,"tcp":5,"udp":5,"icmpv4":0,"icmpv6":0,"tcp_reuse":0,"elephant":0,"get_used":0,"get_used_eval":0,"get_used_eval_reject":0,"get_used_eval_busy":0,"get_used_failed":0,"wrk":{"spare_sync_avg":100,"spare_sync":6,"spare_sync_incomplete":0,"spare_sync_empty":0,"flows_evicted_needs_work":0,"flows_evicted_pkt_inject":0,"flows_evicted":0,"flows_injected":0,"flows_injected_max":0},"end":{"state":{"new":0,"established":0,"closed":0,"local_bypassed":0,"capture_bypassed":0},"tcp_state":{"none":0,"syn_sent":0,"syn_recv":0,"established":0,"fin_wait1":0,"fin_wait2":0,"time_wait":0,"last_ack":0,"close_wait":0,"closing":0,"closed":0},"tcp_liberal":0},"mgr":{"full_hash_pass":2,"rows_per_sec":6553,"rows_maxlen":1,"flows_checked":9,"flows_notimeout":9,"flows_timeout":0,"flows_evicted":0,"flows_evicted_needs_work":0},"spare":9400,"emerg_mode_entered":0,"emerg_mode_over":0,"recycler":{"recycled":0,"queue_avg":0,"queue_max":0},"memuse":11428608},"defrag":{"ipv4":{"fragments":0,"reassembled":0},"ipv6":{"fragments":0,"reassembled":0},"max_trackers_reached":0,"max_frags_reached":0,"tracker_soft_reuse":0,"tracker_hard_reuse":0,"wrk":{"tracker_timeout":0},"mgr":{"tracker_timeout":0},"memuse":33554432},"flow_bypassed":{"local_pkts":0,"local_bytes":0,"local_capture_pkts":0,"local_capture_bytes":0,"closed":0,"pkts":0,"bytes":0},"detect":{"engines":[{"id":0,"last_reload":"2025-08-24T01:18:14.832866+0000","rules_loaded":44763,"rules_failed":0,"rules_skipped":0}],"alert":8,"alert_queue_overflow":0,"alerts_suppressed":10,"lua":{"errors":0,"blocked_function_errors":0,"instruction_limit_errors":0,"memory_limit_errors":0}},"app_layer":{"flow":{"failed_tcp":1,"http":1,"ftp":0,"smtp":0,"tls":0,"ssh":0,"imap":0,"smb":0,"dcerpc_tcp":0,"dns_tcp":0,"nfs_tcp":0,"ntp":5,"ftp-data":0,"tftp":0,"ike":0,"krb5_tcp":0,"quic":0,"dhcp":0,"sip_tcp":0,"rfb":0,"mqtt":0,"telnet":0,"websocket":0,"ldap_tcp":0,"doh2":0,"rdp":0,"http2":0,"bittorrent-dht":0,"pop3":0,"mdns":0,"snmp":0,"failed_udp":0,"dcerpc_udp":0,"dns_udp":0,"nfs_udp":0,"krb5_udp":0,"sip_udp":0,"ldap_udp":0},"error":{"failed_tcp":{"gap":0},"http":{"gap":0,"alloc":0,"parser":0,"internal":0},"ftp":{"gap":0,"alloc":0,"parser":0,"internal":0},"smtp":{"gap":0,"alloc":0,"parser":0,"internal":0},"tls":{"gap":0,"alloc":0,"parser":0,"internal":0},"ssh":{"gap":0,"alloc":0,"parser":0,"internal":0},"imap":{"gap":0,"alloc":0,"parser":0,"internal":0},"smb":{"gap":0,"alloc":0,"parser":0,"internal":0},"dcerpc_tcp":{"gap":0,"alloc":0,"parser":0,"internal":0},"dns_tcp":{"gap":0,"alloc":0,"parser":0,"internal":0},"nfs_tcp":{"gap":0,"alloc":0,"parser":0,"internal":0},"ntp":{"gap":0,"alloc":0,"parser":0,"internal":0},"ftp-data":{"gap":0,"alloc":0,"parser":0,"internal":0},"tftp":{"gap":0,"alloc":0,"parser":0,"internal":0},"ike":{"gap":0,"alloc":0,"parser":0,"internal":0},"krb5_tcp":{"gap":0,"alloc":0,"parser":0,"internal":0},"quic":{"gap":0,"alloc":0,"parser":0,"internal":0},"dhcp":{"gap":0,"alloc":0,"parser":0,"internal":0},"sip_tcp":{"gap":0,"alloc":0,"parser":0,"internal":0},"rfb":{"gap":0,"alloc":0,"parser":0,"internal":0},"mqtt":{"gap":0,"alloc":0,"parser":0,"internal":0},"telnet":{"gap":0,"alloc":0,"parser":0,"internal":0},"websocket":{"gap":0,"alloc":0,"parser":0,"internal":0},"ldap_tcp":{"gap":0,"alloc":0,"parser":0,"internal":0},"doh2":{"gap":0,"alloc":0,"parser":0,"internal":0},"rdp":{"gap":0,"alloc":0,"parser":0,"internal":0},"http2":{"gap":0,"alloc":0,"parser":0,"internal":0},"bittorrent-dht":{"gap":0,"alloc":0,"parser":0,"internal":0},"pop3":{"gap":0,"alloc":0,"parser":0,"internal":0},"mdns":{"gap":0,"alloc":0,"parser":0,"internal":0},"snmp":{"gap":0,"alloc":0,"parser":0,"internal":0},"dcerpc_udp":{"alloc":0,"parser":0,"internal":0},"dns_udp":{"alloc":0,"parser":0,"internal":0},"nfs_udp":{"alloc":0,"parser":0,"internal":0},"krb5_udp":{"alloc":0,"parser":0,"internal":0},"sip_udp":{"alloc":0,"parser":0,"internal":0},"ldap_udp":{"alloc":0,"parser":0,"internal":0}},"tx":{"http":1,"ftp":0,"smtp":0,"tls":0,"ssh":0,"imap":0,"smb":0,"dcerpc_tcp":0,"dns_tcp":0,"nfs_tcp":0,"ntp":20,"ftp-data":0,"tftp":0,"ike":0,"krb5_tcp":0,"quic":0,"dhcp":0,"sip_tcp":0,"rfb":0,"mqtt":0,"telnet":0,"websocket":0,"ldap_tcp":0,"doh2":0,"rdp":0,"http2":0,"bittorrent-dht":0,"pop3":0,"mdns":0,"snmp":0,"dcerpc_udp":0,"dns_udp":0,"nfs_udp":0,"krb5_udp":0,"sip_udp":0,"ldap_udp":0},"expectations":0},"memcap":{"pressure":8,"pressure_max":8},"http":{"memuse":336,"memcap":0,"byterange":{"memuse":176384,"memcap":104857600}},"ftp":{"memuse":0,"memcap":0},"ippair":{"memuse":406144,"memcap":406144},"host":{"memuse":390144,"memcap":33554432},"file_store":{"open_files":0}}}
+{"timestamp":"2025-08-24T01:18:40.772071+0000","flow_id":942445250025987,"in_iface":"eth0","event_type":"alert","src_ip":"192.168.1.195","src_port":48986,"dest_ip":"185.244.25.235","dest_port":6667,"proto":"TCP","ip_v":4,"pkt_src":"wire/pcap","metadata":{"flowbits":["is_proto_irc"]},"alert":{"action":"allowed","gid":1,"signature_id":2002028,"rev":22,"signature":"ET CHAT IRC PONG response","category":"Misc activity","severity":3,"metadata":{"created_at":["2010_07_30"],"signature_severity":["Informational"],"updated_at":["2024_03_14"]}},"app_proto":"failed","direction":"to_server","flow":{"pkts_toserver":37,"pkts_toclient":26,"bytes_toserver":2845,"bytes_toclient":8940,"start":"2025-08-24T01:18:27.809254+0000","src_ip":"192.168.1.195","dest_ip":"185.244.25.235","src_port":48986,"dest_port":6667}}
+{"timestamp":"2025-08-24T01:18:40.772083+0000","flow_id":942445250025987,"in_iface":"eth0","event_type":"alert","src_ip":"192.168.1.195","src_port":48986,"dest_ip":"185.244.25.235","dest_port":6667,"proto":"TCP","ip_v":4,"pkt_src":"wire/pcap","metadata":{"flowbits":["is_proto_irc"]},"alert":{"action":"allowed","gid":1,"signature_id":2002028,"rev":22,"signature":"ET CHAT IRC PONG response","category":"Misc activity","severity":3,"metadata":{"created_at":["2010_07_30"],"signature_severity":["Informational"],"updated_at":["2024_03_14"]}},"app_proto":"failed","direction":"to_server","flow":{"pkts_toserver":38,"pkts_toclient":26,"bytes_toserver":2936,"bytes_toclient":8940,"start":"2025-08-24T01:18:27.809254+0000","src_ip":"192.168.1.195","dest_ip":"185.244.25.235","src_port":48986,"dest_port":6667}}
+"""
+
+classify_eve(eveData)
