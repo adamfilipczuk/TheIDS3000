@@ -14,7 +14,7 @@ pip install --upgrade pip
 pip install -r requirements.txt
 
 # Install tensorflow Same for linux + windows, different on mac
-pip install tensorflow
+# pip install tensorflow
 
 
 crewai install

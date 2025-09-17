@@ -14,7 +14,7 @@ pip install --upgrade pip
 pip install -r requirements.txt
 
 # Mac Specific 
-pip install tensorflow tensorflow-metal
+# pip install tensorflow tensorflow-metal
 
 crewai install
 

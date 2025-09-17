@@ -10,7 +10,9 @@ dependencies = [
     "watchdog",
     "flask",
     "pandas",
-    "numpy<2"
+    "numpy<2",
+    "tensorflow",
+    "tensorflow-metal; sys_platform == 'darwin'",
 ]
 
 [project.scripts]
