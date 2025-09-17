@@ -1,4 +1,2 @@
 uv
 crewai
-pandas
-numpy<2

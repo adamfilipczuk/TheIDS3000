@@ -9,6 +9,8 @@ dependencies = [
     "pygtail",
     "watchdog",
     "flask",
+    "pandas",
+    "numpy<2"
 ]
 
 [project.scripts]
