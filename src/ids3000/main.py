@@ -16,7 +16,6 @@ warnings.filterwarnings("ignore", category=SyntaxWarning, module="pysbd")
 
 def run():
     """Run the crew."""
-
     print("Waiting for data...")
     inputs = {
         'event': data_queue.get(), #this is blocking which is ok because we will be waiting for chunks of data regardless 
@@ -27,7 +26,8 @@ def run():
     with open(output_path, 'w') as f:
         f.write(inputs['event'])
     try:
-        Ids3000().crew().kickoff(inputs=inputs)
+        crew_inst = Ids3000().crew()
+        crew_inst.kickoff(inputs=inputs)
     except Exception as e:
         raise Exception(f"An error occurred while running the crew: {e}")
     finished = True
