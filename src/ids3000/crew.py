@@ -3,9 +3,11 @@ from crewai.project import CrewBase, agent, crew, task
 from crewai.agents.agent_builder.base_agent import BaseAgent
 from typing import List
 from .tools import send_email_tool
+from ids3000.tools.classifier_tool import classifier_Tool
 
 #Instantiate Tools
 send_email = send_email_tool.send_emailTool()
+classify_data = classifier_Tool()
 
 @CrewBase
 class Ids3000():
@@ -18,7 +20,8 @@ class Ids3000():
     def suricata_analyst(self) -> Agent:
         return Agent(
             config=self.agents_config['suricata_analyst'], # type: ignore[index]
-            verbose=False
+            verbose=False,
+            tools=[classify_data]
         )
     
     @task

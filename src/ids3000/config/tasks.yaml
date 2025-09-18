@@ -1,11 +1,14 @@
 suricata_report:
   description: >
     Examine the provided suricata alerts from a VLAN of IoT devices, and 
-    provide a security analysis of the alert content. Consider how the traffic 
-    may fit within a wider context and the intentions any threat actor. Label 
-    the traffic high, medium or low concern, and provide a recommendation if it 
-    warrants further investigation or containment. The alerts are provided here:
-    {event}
+    provide a security analysis of the alert content. Consider how the traffic may 
+    fit within a wider context and the intentions any threat actor. Use the classifier_tool 
+    to pass the event data, pass the data as plain text. The tool will run a 
+    classificiation ML algorithm to help determine if it is malicious. It was 
+    trained on labelled IOT-23 attacks. It will return a classification of 
+    maliciousness from 0-1, with 1 being malicious. Label the traffic high, medium 
+    or low concern, and provide a recommendation if it warrants further investigation 
+    or containment. The alerts are provided here: event={event}
   expected_output: >
     A comprehensive report on the alerts.
   agent: suricata_analyst

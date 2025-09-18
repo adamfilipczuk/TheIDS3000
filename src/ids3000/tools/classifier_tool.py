@@ -1,29 +1,24 @@
-from tools.classifier import classify_eve
-import json
+from .classifier.classifier import classify_eve
 from crewai.tools import BaseTool
 from typing import Type
 from pydantic import BaseModel, Field
 
-import smtplib
-import os
-from dotenv import load_dotenv
+class classifierInput(BaseModel):
+    """Input schema for Classifier Tool."""
+    message: str = Field(..., description="A string of event data can be passed to this tool, it will classify probability of maliciousness, then return the data. ")
 
-class send_emailInput(BaseModel):
-    """Input schema for send_emailTool."""
-    message: str = Field(..., description="A message to be sent by email to the manager")
-
-class send_emailTool(BaseTool):
-    name: str = "send_email"
+class classifier_Tool(BaseTool):
+    name: str = "classifier_tool"
     description: str = (
                 """This runs eve.json alert data through an AI classifier to advise on porbability of maliciousness"""
     )
-    args_schema: Type[BaseModel] = send_emailInput
+    args_schema: Type[BaseModel] = classifierInput
 
-    def _run(self, eveData: str) -> str:
+    def _run(self, message: str) -> str:
 
         try:
             
-            return classify_eve(eveData)
+            return classify_eve(message)
         except:
             return "Error with Classification"
 
