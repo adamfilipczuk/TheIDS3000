@@ -1,6 +1,10 @@
 suricata_report:
   description: >
-    Examine the provided suricata alerts, and provide a security analysis of the alert content. Consider how the traffic may fit within a wider context and the intentions any threat actor. Label the traffic high, medium or low concern, and provide a recommendation if it warrants further investigation or containment. The alerts are provided here:
+    Examine the provided suricata alerts from a VLAN of IoT devices, and 
+    provide a security analysis of the alert content. Consider how the traffic 
+    may fit within a wider context and the intentions any threat actor. Label 
+    the traffic high, medium or low concern, and provide a recommendation if it 
+    warrants further investigation or containment. The alerts are provided here:
     {event}
   expected_output: >
     A comprehensive report on the alerts.
@@ -10,18 +14,65 @@ suricata_report:
 
 incident_planning:
   description: >
-    Plan a response to the incident based on the analysis provided by the suricata_analyst. Your response should be focused to immediate threat areas, containment and elimination of potential attack vectors in order to restore normal operation. The preservation of evidence should be considered as well. Consider the device, upstream routers and switches, the (sub)network(s) and users on the network.
+    Plan a response to the incident on the IoT device VLAN based on the 
+    analysis provided by the suricata_analyst. Your response should be focused 
+    to immediate threat areas, containment and elimination of potential attack 
+    vectors in order to restore normal operation. The preservation of evidence 
+    should be considered as well. Consider the device, upstream routers and 
+    switches, the (sub)network(s) and users on the network.
   expected_output: >
-    A report for dissemination to incident responders, covering all required points in clear and delineated sections so that responders may access wider context but easily understand their own tasks. 
+    A report for dissemination to incident responders, covering all required 
+    points in clear and delineated sections so that responders may access 
+    wider context but easily understand their own tasks. 
   agent: incident_manager 
   output_file: output/incident_plan.md
   context: ["suricata_report"]
 
 email_task:
   description: >
-    The Suricata Analyst and Incident Planner have created reports on the network activity and any planned responses, please paraphrase this for the non-technical site manager and provide him an update in his email.
+    The Suricata Analyst and Incident Planner have created reports on the 
+    network activity from the IoT device vlan, and any planned responses. 
+    Please paraphrase this for the non-technical site manager and provide 
+    him an update in his email.
   expected_output: >
-    An email describing the network incident threat and planned responses, if any. Please also provide a file artifact of the email. 
+    An email describing the network incident threat and planned responses, if 
+    any. Please also provide a file artifact of the email. 
   agent: email_agent
   output_file: output/email.txt
   context: ["suricata_report", "incident_planning"] 
+
+cisco_configuration_report:
+  description: >
+    Analyse an Incident report from the Incident Manager based on a suspected
+    network incident on the IoT device VLAN, and briefly analyse the Suricata
+    Analyst's report for context. Decide, based on the instructions of the 
+    Incident manager the recommended configuration changes to the Cisco router
+    'main-router' and switch 'switch1', and provide these configurations in a
+    report. You should create a markdown report giving your very brief analysis
+    and recommended changes, then provide the code blocks as separate blocks. 
+  expected_output: >
+    A markdown report detailing what actions are being taken (if any) and two 
+    code blocks, one for Cisco router commands, one for Cisco switch commands.
+  agent: cisco_admin
+  output_file: output/cisco_configuration_report.md
+  context: ["suricata_report", "incident_planning"]
+
+supply_router_commands:
+  description: >
+    Provide the router commands created by the cisco_configuration report in a
+    plain text file with no context or comments. These will be pasted directly
+    into a Cisco console.
+  expected_output: A list of router commands in plain text.
+  agent: cisco_admin
+  output_file: output/cisco_router_commands.txt
+  context: ["cisco_configuration_report"]
+
+supply_switch_commands:
+  description: >
+    Provide the switch commands created by the cisco_configuration report in a
+    plain text file with no context or comments. These will be pasted directly
+    into a Cisco console.
+  expected_output: A list of switch commands in plain text.
+  agent: cisco_admin
+  output_file: output/cisco_switch_commands.txt
+  context: ["cisco_configuration_report"]

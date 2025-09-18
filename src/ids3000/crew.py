@@ -20,12 +20,24 @@ class Ids3000():
             config=self.agents_config['suricata_analyst'], # type: ignore[index]
             verbose=False
         )
+    
+    @task
+    def suricata_report(self) -> Task:
+        return Task(
+            config=self.tasks_config['suricata_report'], # type: ignore[index]
+        )
 
     @agent
     def incident_manager(self) -> Agent:
         return Agent(
             config=self.agents_config['incident_manager'], # type: ignore[index]
             verbose=False
+        )
+
+    @task
+    def incident_planning(self) -> Task:
+        return Task(
+            config=self.tasks_config['incident_planning'], # type: ignore[index]
         )
 
     @agent
@@ -37,21 +49,34 @@ class Ids3000():
         )
     
     @task
-    def suricata_report(self) -> Task:
-        return Task(
-            config=self.tasks_config['suricata_report'], # type: ignore[index]
-        )
-
-    @task
-    def incident_planning(self) -> Task:
-        return Task(
-            config=self.tasks_config['incident_planning'], # type: ignore[index]
-        )
-    
-    @task
     def email_task(self) -> Task:
         return Task(
             config=self.tasks_config['email_task'],
+        )
+
+    @agent
+    def cisco_admin(self) -> Agent:
+        return Agent(
+            config=self.agents_config['cisco_admin'], # type: ignore[index]
+            verbose=False
+        )
+
+    @task
+    def cisco_configuration_report(self) -> Task:
+        return Task(
+            config=self.tasks_config['cisco_configuration_report'], # type: ignore[index]
+        )
+
+    @task
+    def supply_router_commands(self) -> Task:
+        return Task(
+            config=self.tasks_config['supply_router_commands'], # type: ignore[index]
+        )
+
+    @task
+    def supply_switch_commands(self) -> Task:
+        return Task(
+            config=self.tasks_config['supply_switch_commands'], # type: ignore[index]
         )
 
     @crew
