@@ -36,7 +36,8 @@ email_task:
     The Suricata Analyst and Incident Planner have created reports on the 
     network activity from the IoT device vlan, and any planned responses. 
     Please paraphrase this for the non-technical site manager and provide 
-    him an update in his email.
+    an update as an email. As the incident is still in progress, make 
+    sure to phrase this in the present tense.
   expected_output: >
     An email describing the network incident threat and planned responses, if 
     any. Please also provide a file artifact of the email. 
