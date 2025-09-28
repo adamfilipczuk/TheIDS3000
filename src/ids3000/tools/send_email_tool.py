@@ -34,8 +34,8 @@ load_dotenv()
 HOST = "smtp.gmail.com"
 PORT = 465
 
-FROM_EMAIL = "notification.ids3000@gmail.com"
-TO_EMAIL = "notification.ids3000@gmail.com"
+FROM_EMAIL = os.getenv("gmail_email_from_address")
+TO_EMAIL = os.getenv("gmail_email_to_address")
 PASSWORD = os.getenv("gmail_app_password")
 
 MESSAGEBASE =f"""Subject: Notification from IDS3000
