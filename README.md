@@ -52,14 +52,36 @@ setup.bat
 
 ### Environment Variables
 
-Add your `OPENAI_API_KEY` or other LLM key into the `.env` file. Most ollama users will need to add the following to their `.env`:
+Two .env files are required for the system to work effectively. One at the project root for connection to the LLM Model, another in the tools folder for the email tool. 
+
+#### Root .env
+
+Add your `OPENAI_API_KEY` or other LLM key into the `.env` file located at the root of the project. 
+If using openAI, the .env file should look as below
+```
+model=openai/GPT-5-mini
+OPENAI_API_KEY=INSERT_KEY_HERE
+```
+
+If using Ollama, users will need to add the following to their `.env`:
 ```
 MODEL=ollama/llama3
 API_BASE=http://localhost:11434
 ```
+
 See CrewAI's [LLM reference page](https://docs.crewai.com/en/concepts/llms) for more info and examples for other LLM configurations.
 
-Add an app password for the gmail mail sending tool with the format `gmail_app_password = "your app password"` to the `.env` file. See [Gmail - Sign in with app passwords](https://support.google.com/mail/answer/185833?hl=en) for more info on app passwords.
+#### Tools Email .env
+
+The IDS3000 uses gmail to communicate actions so they can be managed asyncronously. 
+Create a .env file in `src/ids3000/tools/.env`, structure it as below 
+
+```
+gmail_email_from_address = "FROM EMAIL HERE"
+gmail_email_to_address = "TO EMAIL HERE"
+gmail_app_password = "GMAIL APP PASSWORD HERE"
+```
+See [Gmail - Sign in with app passwords](https://support.google.com/mail/answer/185833?hl=en) for more info on gmail app passwords, these are different to a normal gmail password. 
 
 
 Next, activate the virtual environment for crewai:

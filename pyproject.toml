@@ -5,10 +5,16 @@ description = "ids3000 using crewAI"
 authors = [{ name = "Your Name", email = "you@example.com" }]
 requires-python = ">=3.10,<3.13"
 dependencies = [
-    "crewai[tools]>=0.120.0,<1.0.0",
+    "crewai[tools]<0.120.0",
     "pygtail",
     "watchdog",
     "flask",
+    "pandas",
+    "numpy<2",
+    "protobuf<5.0",
+    "tensorflow==2.16.2; sys_platform != 'darwin'",
+    "tensorflow-macos==2.16.2; sys_platform == 'darwin'",
+    "tensorflow-metal==1.2.0; sys_platform == 'darwin'"
 ]
 
 [project.scripts]

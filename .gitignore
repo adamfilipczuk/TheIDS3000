@@ -42,3 +42,7 @@ src/ids3000/tools/.env
 
 # --- output files ---
 output/*
+
+# --- Classifier Files ---
+src/ids3000/tools/classifier/data/*
+src/ids3000/tools/classifier/saved_model/*

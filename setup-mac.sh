@@ -13,6 +13,9 @@ pip install --upgrade pip
 # Install dependencies
 pip install -r requirements.txt
 
+# Mac Specific 
+# pip install tensorflow-macos tensorflow-metal
+
 crewai install
 
 echo "Setup complete. To run the project, activate the environment:"
