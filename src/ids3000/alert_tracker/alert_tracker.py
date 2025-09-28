@@ -66,8 +66,6 @@ class socket_sender:
                     print("Max retries reached, dropping data")#standalone
                     break
             
-
-
 def process_buffer():
     global buffer
     global appends
@@ -119,3 +117,4 @@ if __name__ == "__main__":
         fw.watch()
     except KeyboardInterrupt:
         print("stopping")
+        
