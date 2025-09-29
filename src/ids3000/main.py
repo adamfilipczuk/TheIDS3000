@@ -6,8 +6,13 @@ import os
 from datetime import datetime
 from ids3000.crew import Ids3000
 from ids3000.socket_listener import socket_listener, data_queue
+from ids3000.alert_tracker import alert_tracker
 
 warnings.filterwarnings("ignore", category=SyntaxWarning, module="pysbd")
+
+# Bridging utilities run on thread in background
+threading.Thread(target=socket_listener, daemon=True).start()
+threading.Thread(target=alert_tracker, daemon=True).start()
 
 # This main file is intended to be a way for you to run your
 # crew locally, so refrain from adding unnecessary logic into this file.
@@ -70,9 +75,6 @@ def test():
         raise Exception(f"An error occurred while testing the crew: {e}")
 
         
-# Socket listener runs on thread in background
-threading.Thread(target=socket_listener, daemon=True).start()
-
 #Logic for running in loop
 # while True:
 #         run()

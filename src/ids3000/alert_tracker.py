@@ -50,7 +50,7 @@ class socket_sender:
                 with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
                     s.connect((self.host, self.port)) 
                     s.sendall(("|".join(data) + "\n").encode("utf-8"))
-                    print("Data sent successfully") #standalone
+                    #print("Data sent successfully") #standalone
                     break  # Exit the loop if successful
             except Exception as e:
                 print(f"Error sending data on port {self.port}: retrying in {delay} seconds...") #standalone
@@ -80,13 +80,13 @@ def process_buffer():
                 appends = 0
 
         if data_to_process:
-            print(data_to_process)#debug
+            #print(data_to_process)#debug
 
             while len(data_to_process) >= CHUNK_SIZE:
                 chunk = data_to_process[:CHUNK_SIZE] #grab a chunk
                 data_to_process = data_to_process[CHUNK_SIZE:]#remove the chunk that will be sent
 
-                print("Sending data") #standalone
+                #print("Sending data") #standalone
                 send_data = socket_sender(HOST, PORT)
                 send_data.send_data(chunk)
 
@@ -100,20 +100,22 @@ def process_buffer():
             if not data_to_process:
                 data_to_process = None
             
-if __name__ == "__main__":
-    watch_path = os.path.abspath(
-    os.path.join("..", "..", "..", "suricata-tcpreplay", "suricata", "eve.json")
-    )
+def alert_tracker():
+    script_dir = os.path.dirname(os.path.abspath(__file__))
+    watch_path = os.path.abspath(os.path.join(script_dir, "..", "..", "suricata-tcpreplay", "suricata", "eve.json"))
 
     if not os.path.isfile(watch_path):
         os.makedirs(os.path.dirname(watch_path), exist_ok=True)
         open(watch_path, 'a').close()  # create the file if it doesn't exist
         print(f"Created missing file at {watch_path}, ensure Suricata is configured to write to this path.") #standalone
 
+    threading.Thread(target=process_buffer, daemon=True).start() #starting a thread to process the buffer in background
+    fw = file_watcher(watch_path)
+    fw.watch()
+
+# Controls standalone output
+if __name__ == "__main__":
     try:
-        print(watch_path)
-        threading.Thread(target=process_buffer, daemon=True).start() #starting a thread to process the buffer in background
-        fw = file_watcher(watch_path)
-        fw.watch()
+        start_alert_tracker()
     except KeyboardInterrupt:
         print("stopping")
