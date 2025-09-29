@@ -30,17 +30,17 @@ HIDDEN_UNITS = [256, 128, 64]
 
 df = pd.read_csv(LEARNING_DATA_PATH, sep="\t", comment="#", low_memory=False)
 
-# SORT+CLEAN TRAINING DATAFRAME
+# CLEAN TRAINING DATAFRAME - remove extra spaces in data. 
 
 df.columns = df.columns.str.strip()
 
-    # convert benign/malicious labels to 0 and 1 respecively
+# Convert benign/malicious labels to 0 and 1 respecively
 
 label_map = {"Benign": 0, "Malicious": 1}
 
 df["label"] = df["label"].map(label_map).astype(int)
 
-    # Import numeric columns and convert non numeric entries to 0
+# Import numeric columns and convert non numeric entries to 0
 NUMERIC_COLUMNS = [
     "id.orig_p", "id.resp_p", "orig_pkts", "resp_pkts", "orig_ip_bytes", "resp_ip_bytes"
 ]
@@ -59,6 +59,9 @@ print(TRAINING_COLUMNS)
 X = df[TRAINING_COLUMNS]
 y = df["label"]
 
+
+# Split data into random training and testing subsets. 
+
 X_train, X_test, y_train, y_test = train_test_split(
     X,
     y,
@@ -68,15 +71,16 @@ X_train, X_test, y_train, y_test = train_test_split(
 )
 
 
-# PREPROCESSING 
-numeric_features = NUMERIC_COLUMNS 
+# PREPROCESSING DATA CONVERSIONS
 
+    # NUMERIC COLUMNS -- Normalisation scales numeric features (processed data) to a common range or distribution allowing better training. 
 normalizer = {}
-for name in numeric_features:
+for name in NUMERIC_COLUMNS:
     norm = layers.Normalization()
     norm.adapt(np.array(X_train[name]).reshape(-1, 1))
     normalizer[name] = norm
 
+    # STRING COLUMNS -- This turns string values into numbers (cat_lookup), then numbers into one-hot vectors (cat_onehot)
 
 categorical_features = ["id.orig_h", "id.resp_h", "proto", "service"]
 cat_lookup = {}
@@ -92,15 +96,15 @@ for name in categorical_features:
     )
     cat_onehot[name] = onehot
 
-#
+# Make preprocessor function 
 
 def make_preprocessor() -> tf.keras.Model:
     # numeric inputs 
     num_in = {
         n: tf.keras.Input(shape=(1,), name=n, dtype=tf.float32)
-        for n in numeric_features
+        for n in NUMERIC_COLUMNS
     }
-    num_out = [normalizer[n](num_in[n]) for n in numeric_features]
+    num_out = [normalizer[n](num_in[n]) for n in NUMERIC_COLUMNS]
 
 
     # categorical inputs 
@@ -127,6 +131,7 @@ def make_preprocessor() -> tf.keras.Model:
 
 preprocessor = make_preprocessor()
 
+# ML Training 
 
 def build_classifier(input_dim: int,
                     hidden_units: list[int] = HIDDEN_UNITS,
@@ -166,7 +171,6 @@ train_ds = df_to_dataset(X_train, y_train, shuffle=True)
 val_ds   = df_to_dataset(X_test,  y_test,  shuffle=False)
 
 def map_preprocess(features, label):
-    """Run the Keras preprocessor and cast label to float."""
     return preprocessor(features), tf.cast(label, tf.float32)
 
 
@@ -175,6 +179,8 @@ val_prepared   = val_ds.map(map_preprocess)
 
 pos_weight = (y_train == 0).sum() / (y_train == 1).sum()
 print(f" Positive‑class weight = {pos_weight:.3f}")
+
+# Start Training
 
 classifier.compile(
     optimizer=tf.keras.optimizers.Adam(learning_rate=LEARN_RATE),
@@ -186,7 +192,7 @@ classifier.compile(
     ],
 )
 
-#Start Training
+
 history = classifier.fit(
     train_prepared,
     epochs=EPOCHS,
