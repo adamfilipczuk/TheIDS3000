@@ -8,7 +8,7 @@ suricata_report:
     trained on labelled IOT-23 attacks. It will return a classification of 
     maliciousness from 0-1, with 1 being malicious. Label the traffic high, medium 
     or low concern, and provide a recommendation if it warrants further investigation 
-    or containment. The alerts are provided here: event={event}
+    or containment. Send all the data at the same time. The alerts are provided here: {event}
   expected_output: >
     A comprehensive report on the alerts.
   agent: suricata_analyst

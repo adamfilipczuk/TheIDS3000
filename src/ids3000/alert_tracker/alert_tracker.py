@@ -49,7 +49,7 @@ class socket_sender:
             try:
                 with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
                     s.connect((self.host, self.port)) 
-                    s.sendall(("\n".join(data) + "\n").encode("utf-8"))
+                    s.sendall(("|".join(data) + "\n").encode("utf-8"))
                     print("Data sent successfully") #standalone
                     break  # Exit the loop if successful
             except Exception as e:
