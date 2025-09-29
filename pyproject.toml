@@ -30,3 +30,6 @@ build-backend = "hatchling.build"
 
 [tool.crewai]
 type = "crew"
+
+[tool.uv]
+constraint-dependencies = ["tensorflow-io-gcs-filesystem==0.31.0"]
