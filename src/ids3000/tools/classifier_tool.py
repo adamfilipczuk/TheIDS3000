@@ -2,6 +2,9 @@ from .classifier.classifier import classify_eve
 from crewai.tools import BaseTool
 from typing import Type
 from pydantic import BaseModel, Field
+#import traceback 
+# useful for debugging, below code commented with '#debug' will provide traceback
+# in stdout()
 
 class classifierInput(BaseModel):
     """Input schema for Classifier Tool."""
@@ -20,5 +23,7 @@ class classifier_Tool(BaseTool):
             
             return classify_eve(message)
         except:
+#debug            print("Exception occured in classifier_tool:\n") 
+#debug            print(traceback.format_exc())
             return "Error with Classification"
 

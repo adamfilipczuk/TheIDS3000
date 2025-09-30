@@ -3,10 +3,12 @@ import json
 from crewai.tools import BaseTool
 from typing import Type
 from pydantic import BaseModel, Field
-
 import smtplib
 import os
 from dotenv import load_dotenv
+#import traceback 
+# useful for debugging, below code commented with '#debug' will provide traceback
+# in stdout()
 
 class send_emailInput(BaseModel):
     """Input schema for send_emailTool."""
@@ -27,6 +29,8 @@ class send_emailTool(BaseTool):
             send_email(message)
             return "Email Sent Successfully"
         except:
+#debug            print("Exception occured in send_email_tool:\n")
+#debug            print(traceback.format_exc())
             return "Error Sending Email"
 
 load_dotenv()
@@ -37,6 +41,17 @@ PORT = 465
 FROM_EMAIL = os.getenv("gmail_email_from_address")
 TO_EMAIL = os.getenv("gmail_email_to_address")
 PASSWORD = os.getenv("gmail_app_password")
+
+# checks environment variables for validity:
+environment_variables = {
+    "FROM_EMAIL": FROM_EMAIL,
+    "TO_EMAIL": TO_EMAIL,
+    "PASSWORD": PASSWORD
+}
+for name, value in environment_variables.items():
+    if value is None:
+        raise KeyError(f"Environment variable '{name}' is undefined. Please ensure you have set email environment variables.")
+
 
 MESSAGEBASE =f"""Subject: Notification from IDS3000
 From: {FROM_EMAIL}
