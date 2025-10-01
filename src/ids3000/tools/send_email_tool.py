@@ -10,6 +10,17 @@ from dotenv import load_dotenv
 # useful for debugging, below code commented with '#debug' will provide traceback
 # in stdout()
 
+HOST = "smtp.gmail.com"
+PORT = 465
+FROM_EMAIL = os.getenv("gmail_email_from_address")
+TO_EMAIL = os.getenv("gmail_email_to_address")
+PASSWORD = os.getenv("gmail_app_password")
+MESSAGEBASE =f"""Subject: Notification from IDS3000
+From: {FROM_EMAIL}
+To: {TO_EMAIL}
+
+"""
+
 class send_emailInput(BaseModel):
     """Input schema for send_emailTool."""
     message: str = Field(..., description="A message to be sent by email to the manager")
@@ -25,6 +36,18 @@ class send_emailTool(BaseTool):
 
     def _run(self, message: str) -> str:
 
+        load_dotenv()
+
+        # checks environment variables for validity:
+        environment_variables = {
+            "FROM_EMAIL": FROM_EMAIL,
+            "TO_EMAIL": TO_EMAIL,
+            "PASSWORD": PASSWORD
+        }
+        for name, value in environment_variables.items():
+            if value is None:
+                raise KeyError(f"Environment variable '{name}' is undefined. Please ensure you have set email environment variables.")
+
         try:
             send_email(message)
             return "Email Sent Successfully"
@@ -33,31 +56,6 @@ class send_emailTool(BaseTool):
 #debug            print(traceback.format_exc())
             return "Error Sending Email"
 
-load_dotenv()
-
-HOST = "smtp.gmail.com"
-PORT = 465
-
-FROM_EMAIL = os.getenv("gmail_email_from_address")
-TO_EMAIL = os.getenv("gmail_email_to_address")
-PASSWORD = os.getenv("gmail_app_password")
-
-# checks environment variables for validity:
-environment_variables = {
-    "FROM_EMAIL": FROM_EMAIL,
-    "TO_EMAIL": TO_EMAIL,
-    "PASSWORD": PASSWORD
-}
-for name, value in environment_variables.items():
-    if value is None:
-        raise KeyError(f"Environment variable '{name}' is undefined. Please ensure you have set email environment variables.")
-
-
-MESSAGEBASE =f"""Subject: Notification from IDS3000
-From: {FROM_EMAIL}
-To: {TO_EMAIL}
-
-"""
 def send_email(message_body):
     smtp = smtplib.SMTP_SSL(HOST, PORT)
 
