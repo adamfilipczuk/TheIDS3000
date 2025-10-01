@@ -26,10 +26,11 @@ def socket_listener():
                     conn, addr = s.accept()
                     with conn:
                         print(f"Connected by {addr}")
-                        data = conn.recv(65432)
+                        data = conn.recv(10000)  # Adjust buffer size as needed can be changed to adjust dynamically
                         if data:
                             # commented out this printing as it shows in crewai run
-                            # print(f"[NEW DATA] {data.decode('utf-8')}")
+                            #print(f"[NEW DATA] {data.decode('utf-8')}")
+                            print(list(data_queue.queue))
                             data_queue.put(data.decode('utf-8'))
             except OSError as e:
                 if e.errno == 10048:
