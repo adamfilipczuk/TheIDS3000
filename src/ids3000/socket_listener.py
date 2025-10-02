@@ -31,7 +31,9 @@ def socket_listener():
                             # commented out this printing as it shows in crewai run
                             #print(f"[NEW DATA] {data.decode('utf-8')}")
                             print(list(data_queue.queue))
-                            data_queue.put(data.decode('utf-8'))
+                            for line in data.decode('utf-8').splitlines():
+                                if line.strip():
+                                    data_queue.put(line.strip())
             except OSError as e:
                 if e.errno == 10048:
                     port += 1
