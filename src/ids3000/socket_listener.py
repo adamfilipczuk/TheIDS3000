@@ -25,7 +25,7 @@ def recv_all(conn, buffer_size=4096):
                 break
         except socket.timeout:
             break
-        return data
+    return data
     
 def socket_listener():
     global data_queue
