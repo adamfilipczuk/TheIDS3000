@@ -10,12 +10,18 @@ class TestTools:
     def __init__(self):
         pass
 
-    def port_occupier(self, port = 65432, localhost='127.0.0.1', stop_event = None):
+    def port_occupier(self, port, localhost, stop_event = None):
         with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
+            #ipv4
             s.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
             s.bind((localhost, port))
+            s.listen(1)
+            #ipv6
+            s6 = socket.socket(socket.AF_INET6, socket.SOCK_STREAM)
+            s6.bind(("::", port))
+            s6.listen(1)
             os.system('cls' if os.name == 'nt' else 'clear')
-            print(f"Port {port} occupied on {localhost}")
+            print(f"Port {port} occupied on {localhost}  ipv4 and :: ipv6")
             try:
                 while not stop_event.is_set():
                     time.sleep(1)
@@ -24,7 +30,7 @@ class TestTools:
                 print(f"Port {port} released on {localhost}")
 
     # means that crewAI doesn't need to be running
-    def socket_tester(self, port=65432, localhost='127.0.0.1', stop_event=None):
+    def socket_tester(self, port, localhost, stop_event=None):
         with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
             s.bind((localhost, int(port)))
             s.listen()
@@ -37,7 +43,7 @@ class TestTools:
                         conn, addr = s.accept()
                         with conn:
                             print(f"\nConnected by {addr}")
-                            data = conn.recv(1024)
+                            data = conn.recv(10000)
                             if data:
                                 print(f"\n[NEW DATA] {data.decode('utf-8')}")
                     except socket.timeout:
@@ -46,16 +52,37 @@ class TestTools:
                 os.system('cls' if os.name == 'nt' else 'clear')
                 print(f"Socket tester stopping on port {port}")
 
-    def dummy_data_populator(self, filename="eve.json", dummy_data = '{"type": "test", "data": "this is a test"}', iterations=1, delay = 0, stop_event = None):
+    def dummy_data_populator(self, filename, dummy_data, iterations, delay, stop_event = None):
         file_path = os.path.join('suricata-tcpreplay', 'suricata', filename)
         with open(file_path, 'w') as f:
+            for i in range(iterations):
+                if stop_event and stop_event.is_set():
+                    break
+                f.write(dummy_data + '\n')
+                f.flush()
+                time.sleep(delay)
+        os.system('cls' if os.name == 'nt' else 'clear')
+        print(f"Dummy data written to {filename}")
+    
+
+    def multi_append_helper(self, filename, dummy_data, iterations, delay):
+        file_path = os.path.join('suricata-tcpreplay', 'suricata', filename)
+        with open(file_path, 'a') as f:
             for i in range(iterations):
                 if stop_event.is_set():
                     break
                 f.write(dummy_data + '\n')
                 time.sleep(delay)
-        os.system('cls' if os.name == 'nt' else 'clear')
-        print(f"Dummy data written to {filename}")
+    
+    def multi_append(self, filename, dummy_data, iterations, delay, stop_event = None):
+        thread_list = []
+        for _ in range(5):
+            t = threading.Thread(target=self.multi_append_helper, args=(filename, dummy_data, iterations, delay))
+            t.start()
+            thread_list.append(t)
+        for t in thread_list:
+            t.join()
+
 
 if __name__ == "__main__":
     tools = TestTools()
@@ -65,6 +92,7 @@ if __name__ == "__main__":
         "port": {"thread": None, "stop": None},
         "socket": {"thread": None, "stop": None},
         "dummy": {"thread": None, "stop": None},
+        "append": {"thread": None, "stop": None},
     }
 
     while True:
@@ -72,15 +100,17 @@ if __name__ == "__main__":
         print("1. Port Occupier - occupies a specified port")
         print("2. Socket Tester - listens on a specified port and prints incoming data")
         print("3. Dummy Data Populator - writes dummy data to a specified file")
-        print("4. End port occupier")
-        print("5. End socket tester")
-        print("6. End dummy data populator")
+        print("4. Dummy Data Append - Appends dummy data to a specified file with 5 threads")
+        print("5. End port occupier")
+        print("6. End socket tester")
+        print("7. End dummy data populator")
+        print("8. End dummy data append")
         print("q. Quit")
         choice = input("Enter choice: ")
 
         if choice == '1':
             port = int(input("Enter port to occupy (default 65432): ") or 65432)
-            localhost = input("Enter localhost IP (default 127.0.0.1): ") or '127.0.0.1'
+            localhost = input("Enter localhost IP (default 0.0.0.0): ") or '0.0.0.0'
             stop_event = threading.Event()
             thread = threading.Thread(target=tools.port_occupier, args= (port, localhost, stop_event), daemon=True)
             jobs["port"] = {"thread": thread, "stop": stop_event}
@@ -88,7 +118,7 @@ if __name__ == "__main__":
             
         elif choice == '2':
             port = int(input("Enter port to occupy (default 65432): ") or 65432)
-            localhost = input("Enter localhost IP (default 127.0.0.1): ") or '127.0.0.1'
+            localhost = input("Enter localhost IP (default 0.0.0.0): ") or '0.0.0.0'
             stop_event = threading.Event()
             thread = threading.Thread(target=tools.socket_tester, args= (port, localhost, stop_event), daemon=True)
             jobs["socket"] = {"thread": thread, "stop": stop_event}
@@ -105,6 +135,16 @@ if __name__ == "__main__":
             thread.start()
         
         elif choice == '4':
+            filename = input("Enter filename to write to (default eve.json): ") or "eve.json"
+            dummy_data = input("Enter dummy data to write: ") or '{"type": "test", "data": "this is a test"}'
+            iterations = int(input("Enter number of iterations (default 1): ") or 1)
+            delay = float(input("Enter delay between writes in seconds (default 0): ") or 0)
+            stop_event = threading.Event()
+            thread = threading.Thread(target=tools.multi_append, args=(filename, dummy_data, iterations, delay, stop_event), daemon=True)
+            jobs["append"] = {"thread": thread, "stop": stop_event}
+            thread.start()
+        
+        elif choice == '5':
             if jobs["port"]["thread"]:
                 jobs["port"]["stop"].set()
                 jobs["port"]["thread"].join()
@@ -114,7 +154,7 @@ if __name__ == "__main__":
                 os.system('cls' if os.name == 'nt' else 'clear')
                 print("Port occupier is not running.")
 
-        elif choice == '5':
+        elif choice == '6':
             if jobs["socket"]["thread"]:
                 jobs["socket"]["stop"].set()
                 jobs["socket"]["thread"].join()
@@ -124,7 +164,7 @@ if __name__ == "__main__":
                 os.system('cls' if os.name == 'nt' else 'clear')
                 print("Socket tester is not running.")
 
-        elif choice == '6':
+        elif choice == '7':
             if jobs["dummy"]["thread"]:
                 jobs["dummy"]["stop"].set()
                 jobs["dummy"]["thread"].join()
@@ -134,6 +174,15 @@ if __name__ == "__main__":
                 os.system('cls' if os.name == 'nt' else 'clear')
                 print("Dummy data is not running.")
         
+        elif choice == '8':
+            if jobs["append"]["thread"]:
+                jobs["append"]["stop"].set()
+                jobs["append"]["thread"].join()
+                jobs["append"] = {"thread": None, "stop": None}
+                print("Append dummy data stopped.")
+            else:
+                os.system('cls' if os.name == 'nt' else 'clear')
+                print("Append dummy data is not running.")
         
         elif choice.lower() == 'q':
             print("Exiting...")
