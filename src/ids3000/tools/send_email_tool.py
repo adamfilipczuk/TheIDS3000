@@ -6,6 +6,8 @@ from pydantic import BaseModel, Field
 import smtplib
 import os
 from dotenv import load_dotenv
+import time
+import socket
 #import traceback 
 # useful for debugging, below code commented with '#debug' will provide traceback
 # in stdout()
@@ -36,7 +38,11 @@ class send_emailTool(BaseTool):
 load_dotenv()
 
 HOST = "smtp.gmail.com"
-PORT = 465
+PORTS = [465, 587]
+RETRIES = 3 # number of retries for both ports
+LOOPS = 3 #number of loops over both ports
+DELAY = 5 #seconds between retries
+HOST_DELAY = 15 #seconds to wait for host to respond
 
 FROM_EMAIL = os.getenv("gmail_email_from_address")
 TO_EMAIL = os.getenv("gmail_email_to_address")
@@ -59,14 +65,51 @@ To: {TO_EMAIL}
 
 """
 def send_email(message_body):
-    smtp = smtplib.SMTP_SSL(HOST, PORT)
+    tries = 0
+    loop = 0
+    port_index = 0
+    host_down = 0
 
-    response = smtp.ehlo()
-    print(f"[*] Connecting to email server: {response}")
+    while loop < LOOPS:
+        port = PORTS[port_index]
+        try:
+            if port == 465:
+                smtp = smtplib.SMTP_SSL(HOST, port, timeout=10)
+            else:
+                smtp = smtplib.SMTP(HOST, port, timeout=10)
+                smtp.starttls()
 
-    response = smtp.login(FROM_EMAIL, PASSWORD)
-    print(f"Logging In: {response}")
+            response = smtp.ehlo()
+            print(f"[*] Connecting to email server: {response}")
+
+            response = smtp.login(FROM_EMAIL, PASSWORD)
+            print(f"Logging In: {response}")
 
 
-    smtp.sendmail(FROM_EMAIL, TO_EMAIL, MESSAGEBASE+message_body )
-    smtp.quit()
+            smtp.sendmail(FROM_EMAIL, TO_EMAIL, MESSAGEBASE+message_body )    
+            smtp.quit()
+            return True
+
+        except (socket.gaierror, socket.herror, socket.timeout):
+            host_down += 1
+            if host_down >= RETRIES:
+                print("Error sending email: Host down, aborting email send")
+                return False
+            print(f"Error sending email: Host down, retrying in {HOST_DELAY} seconds...")
+            time.sleep(HOST_DELAY)
+            continue
+
+        except (socket.timeout, ConnectionRefusedError, OSError) as e:
+            print(f"Error sending email on port {port}: retrying in 5 seconds...")
+            port_index = (port_index + 1) % len(PORTS)
+                
+        tries += 1
+        if tries >= RETRIES:
+            tries = 0
+            loop += 1
+        time.sleep(DELAY)
+
+    if loop >= LOOPS:
+        print("Error sending email: Max retries reached, dropping email")
+        return False
+
