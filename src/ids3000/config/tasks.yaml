@@ -3,14 +3,14 @@ suricata_report:
     Examine the provided suricata alerts from a VLAN of IoT devices, and 
     provide a security analysis of the alert content. Consider how the traffic may 
     fit within a wider context and the intentions any threat actor. Use the classifier_tool 
-    to pass the event data, pass the data as plain text. The tool will run a 
-    classificiation ML algorithm to help determine if it is malicious. It was 
+    to parse the event data, pass the data as plain text. The tool will run a 
+    classification ML algorithm to help determine if it is malicious. It was 
     trained on labelled IOT-23 attacks. It will return a classification of 
     maliciousness from 0-1, with 1 being malicious. Analyse the traffic using 
     the classifier and the raw data both. Label the traffic high, medium or low 
     concern, and provide a recommendation if it warrants further investigation 
-    or containment. Send all the data at the same time. The alerts are provided
-    here: {event}
+    or containment, if not then note it as normal traffic behaviour. 
+    Send all the data at the same time. The alerts are provided here: {event}
   expected_output: >
     A comprehensive report on the alerts formatted in markdown.
   agent: suricata_analyst
@@ -24,7 +24,8 @@ incident_planning:
     to immediate threat areas, containment and elimination of potential attack 
     vectors in order to restore normal operation. The preservation of evidence 
     should be considered as well. Consider the device, upstream routers and 
-    switches, the (sub)network(s) and users on the network.
+    switches, the (sub)network(s) and users on the network. If traffic is
+    normal, then note this and tell responders to continue monitoring as normal.
   expected_output: >
     A report for dissemination to incident responders, covering all required 
     points in clear and delineated sections so that responders may access 
@@ -55,7 +56,10 @@ cisco_configuration_report:
     Incident manager the recommended configuration changes to the Cisco router
     'main-router' and switch 'switch1', and provide these configurations in a
     report. You should create a markdown report giving your very brief analysis
-    and recommended changes, then provide the code blocks as separate blocks. 
+    and recommended changes, then provide the code blocks as separate blocks.
+    Do not include the incident plan or suricata analysis in your report. 
+    If traffic is routine then you should make no changes to the configuration,
+    only providing `!comments` for each config and note this in your report.
   expected_output: >
     A markdown report detailing what actions are being taken (if any) and two 
     code blocks, one for Cisco router commands, one for Cisco switch commands.
@@ -65,7 +69,7 @@ cisco_configuration_report:
 
 supply_router_commands:
   description: >
-    Provide the router commands created by the cisco_configuration report in a
+    Provide any router commands created by the cisco_configuration report in a
     plain text file with no context or comments. These will be pasted directly
     into a Cisco console.
   expected_output: A list of router commands in plain text.
@@ -75,7 +79,7 @@ supply_router_commands:
 
 supply_switch_commands:
   description: >
-    Provide the switch commands created by the cisco_configuration report in a
+    Provide any switch commands created by the cisco_configuration report in a
     plain text file with no context or comments. These will be pasted directly
     into a Cisco console.
   expected_output: A list of switch commands in plain text.
