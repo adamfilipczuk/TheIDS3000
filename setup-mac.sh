@@ -1,5 +1,7 @@
 #!/bin/bash
 # Quick setup for IDS 3000
+# Error handling for script
+set -e, -u, -x, -o pipefail
 
 # Create virtual environment
 python -m venv .venv
