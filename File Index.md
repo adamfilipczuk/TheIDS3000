@@ -14,6 +14,7 @@ TheIDS3000
 ├── .git/
 ├── .gitignore
 ├── knowledge/
+├── File Index.md
 ├── README.md
 ├── setup.bat
 ├── setup-linux.sh
@@ -40,6 +41,7 @@ TheIDS3000
 | .git/                                 | Git files containing commit history etc.                                                                                                                                                             |
 | .gitignore                            | Git configuration file.                                                                                                                                                                              |
 | knowledge/                            | Folder used by CrewAI for providing static data sources to LLMs. Not used in project. Read the [CrewAI Knowledge documentation](https://docs.crewai.com/en/concepts/knowledge) for more information. |
+| File Index.md                         | Description and index of all files.                                                                                                                                                                  |
 | README.md                             | Project Readme file.                                                                                                                                                                                 |
 | **setup***.**bat**,.**sh**            | Setup scripts for Windows, MacOS and Linux. Creates a Python virtual environment with project dependencies installed.                                                                                |
 | requirements.txt                      | Base dependencies for CrewAI. Further dependencies are managed by uv.                                                                                                                                |
@@ -73,7 +75,8 @@ TheIDS3000/src/ids3000/
     │   ├── saved_model
     │   │   ├── classifier_tf_min.keras
     │   │   └── preprocessor_tf_min.keras
-    │   └── training.py
+    │   ├── training.py
+    │   └── Readme.md
     ├── custom_tool.py
     ├── classifier_tool.py
     └── send_email_tool.py
@@ -98,6 +101,7 @@ TheIDS3000/src/ids3000/
 | classifier/data          | Data used for training the classifier. <br><br>`conn.log.labeled` is a concatenated csv file of labelled dataset objects from the IoT-23 dataset. You can find the individual labelled files in the IoT-23 objects, under the `bro/` folder. E.g, `CTU-Honeypot-5-1/bro/conn.log.labeled`.<br><br>`eve.json` is sample suricata eve data used with the classifier in standalone mode for debugging. |
 | classifier/saved_model/  | This folder stores ML model files. You must place your \*.keras files here, or train a model using training.py, which will save the model files here.                                                                                                                                                                                                                                               |
 | classifier/training.py   | Training script for the classifier. You must place a `conn.log.labeled` file in `classifier/data` to train the classifier. You may need to check the labeled file to ensure all headers are tab delineated. Some files have a mix of tab delineated and space delineated headers straight out of the dataset.                                                                                       |
+| classifier/Readme.md     | Classifier training instructions.                                                                                                                                                                                                                                                                                                                                                                   |
 ## suricata-tcpreplay
 
 ```

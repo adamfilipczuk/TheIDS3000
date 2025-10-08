@@ -3,13 +3,9 @@
 This Docker container integrates **Suricata** and **tcpreplay** to enable live packet replay and analysis by Suricata. Managed by `docker-compose`, the container is designed for ease of use and system compatibility. It provides basic variables for configuring `tcpreplay` and `suricata`, and exposes Suricata's logs for investigation.
 
 ## Installation and Setup (WSL/Ubuntu)
-
-This system was developed using **Windows Subsystem for Linux (WSL)** with **Ubuntu**. These instructions are tailored for WSL and Ubuntu environments. To install WSL, use the command `wsl --install` or refer to the official [WSL Installation Instructions](https://learn.microsoft.com/en-us/windows/wsl/install).
-
----
+This system was developed using **Windows Subsystem for Linux (WSL)** with **Ubuntu**. These instructions are tailored for WSL and Ubuntu environments but should work on most operating systems.
 
 ### Docker and Docker-Compose Installation
-
 * Install Docker:
     ```bash
     sudo snap install docker
@@ -27,12 +23,10 @@ After installation, clone this repository. From within the `suricata-tcpreplay` 
     ```bash
     docker compose up
     ```
-    Suricata's logs, including the important `eve.json` file, will be accessible in the `./suricata` directory.
-
+    Suricata's logs, including the `eve.json` file, will be accessible in the created `./suricata` directory.
 ---
 
 ## Advanced Configuration
-
 You can customize Suricata and tcpreplay settings using **environment variables**. This can be done by editing the `compose.yaml` file or by setting the variables at runtime.
 
 ### Suricata Variables
@@ -80,3 +74,4 @@ docker compose run \
 -e FILENAME=2018-20-08-19-53-26.pcap \
 -e SURICATA_RULES=/etc/suricata/rules/local.rules \
 suricata-tcpreplay
+```

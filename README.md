@@ -1,146 +1,102 @@
-**<h1>AI Agents Enhancing Cybersecurity in Cyber Physical Systems (CPS)</h1>**
+# AI Agents Enhancing Cybersecurity in Cyber Physical Systems - IDS3000
+<img width="1024" height="700" alt="IDS3000 Logo" src="https://github.com/user-attachments/assets/abe8771b-0558-4e86-a0b1-591d30552429" />
 
-<img width="1024" height="700" alt="ChatGPT Image Aug 29, 2025, 05_42_09 PM1" src="https://github.com/user-attachments/assets/abe8771b-0558-4e86-a0b1-591d30552429" />
+Welcome to the IDS3000 detection and response system. The project leverages agentic AI to provide enhanced responses to network threats.
 
-
-
-
-<h4>Welcome to the IDS3000 detection and response system. This project leverages agentic AI to provide enhanced responses to network threats.</h4>
-
-<img width="375" height="114" alt="crewai-brand-color-2058650934" src="https://github.com/user-attachments/assets/8989944a-3f6b-4469-aad4-364438a4fc69" />
-
-<h4>A brief description of Crewai, Crewai Crews and Crewai Workflows:</h4>
-
-Developed entirely on its own foundation, CrewAI is a rapid and efficient Python framework that operates without LangChain or comparable frameworks.
-
-
-CrewAI provides developers with an accessible framework that balances ease of use with detailed, low-level customization, making it well-suited for building autonomous AI agents across diverse applications.
-
-• CrewAI Crews: Designed to maximize autonomy and teamwork, allowing developers to build AI groups where each agent is assigned defined roles, tools, and objectives.
-
-• CrewAI Flows: Offer fine-grained, event-based task management, support single LLM calls for precise orchestration, and integrate seamlessly with Crews.
-
-If you would like to know more about Crewai and how to use it, visit the Crewai website [here](https://docs.crewai.com/en/introduction).
+## Contents
+- [**Installation and Setup**](#installation-and-setup)
+    - [**Dependencies**](#dependencies)
+    - [**CrewAI Setup**](#crewai-setup)
+    - [**Environment Variables**](#environment-variables)
+    - [**Additional Configuration**](#additional-configuration)
+         - [**Tensorflow Model**](#tensorflow-model-configuration)
+         - [**Docker Container Instructions**](#docker-container-instructions)
+### More information
+- [**suricata-tcpreplay container advanced configuration**](./suricata-tcpreplay/Readme.md)
+- [**Tensorflow model training instructions**](./src/ids3000/tools/classifier/Readme.md)
+- [**File Index**](<./File Index.md>)
 
 ## Installation and Setup
-
-<img width="375" height="200" alt="Docker-Logo-2015-2017-1067899226" src="https://github.com/user-attachments/assets/43d7da2a-69e5-4698-83fa-07506761119f" />       <img width="375" height="200" alt="python-logo-800x500-2157912460" src="https://github.com/user-attachments/assets/52282daf-342a-4095-bb23-fa5c864bb87a" />
-
-
-
-
+### Dependencies
 Ensure you have **Python >=3.10 <3.13**, **Docker** and **Docker Compose** installed on your system. Linux and WSL users may also need `python-venv` and `pip` if they are not installed with python. To check Python3 is installed and the version number, run the command `python3 --version` or `python --version`. Docker and Compose installation instructions are available at [the Docker](https://docs.docker.com/engine/install/) and [Docker Compose](https://docs.docker.com/compose/install/) installation reference pages.
 
+### CrewAI Setup
 To create a virtual environment for running Crewai, and to install further dependencies; simply run the setup script for your operating system:
 
-### Linux/WSL  
+#### Linux/WSL  
 ```bash
 chmod +x ./setup-linux.sh
 ./setup-linux.sh
 ```
 
-### MacOS  
+#### MacOS  
 ```zsh
 chmod +x ./setup-mac.sh
 ./setup-mac.sh
 ```
 
-### Windows  
+#### Windows  
 ```PowerShell
 setup.bat
 ```
 
-### Environment Variables
+#### Environment Variables
+LLM configuration and the Gmail API are managed using environment variables. Add these variables to the `.env` file at the project root:
 
-Two .env files are required for the system to work effectively. One at the project root for connection to the LLM Model, another in the tools folder for the email tool. 
+##### LLM Setup
+LLM Configuration differs depending on your LLM provider. OpenAI and Ollama instructions are provided below. For more information, see the [CrewAI LLMs](https://docs.crewai.com/en/concepts/llms) documentation.
 
-#### Root .env
+###### OpenAI API
+Add your `OPENAI_API_KEY` or other LLM key into the `.env` file located at the root of the project. You may also add a [model supported by CrewAI](https://docs.crewai.com/en/concepts/llms#openai).
 
-Add your `OPENAI_API_KEY` or other LLM key into the `.env` file located at the root of the project. 
-If using openAI, the .env file should look as below
-```
-model=openai/GPT-5-mini
+If using OpenAI, the `.env` file will look similar to below:
+```bash
+#MODEL=openai/gpt-4o-mini
 OPENAI_API_KEY=INSERT_KEY_HERE
 ```
 
-If using Ollama, users will need to add the following to their `.env`:
-```
+###### Ollama
+Add your Ollama address and port, as well as the model. Model names must be defined when using Ollama.
+
+If using Ollama, the `.env` file will look similar to below:
+```bash
 MODEL=ollama/llama3
 API_BASE=http://localhost:11434
 ```
 
 See CrewAI's [LLM reference page](https://docs.crewai.com/en/concepts/llms) for more info and examples for other LLM configurations.
 
-#### Tools Email .env
-
-The IDS3000 uses gmail to communicate actions so they can be managed asyncronously. 
-Create a .env file in `src/ids3000/tools/.env`, structure it as below 
-
+##### Tools Email .env
+The IDS3000 uses gmail to communicate actions so they can be managed asyncronously. Add the following environment variables to your `.env` file and replace the definitions.
+```bash
+gmail_email_from_address = "email@example.com"
+gmail_email_to_address = "email@gmail.com"
+gmail_app_password = "apdj pass word"
 ```
-gmail_email_from_address = "FROM EMAIL HERE"
-gmail_email_to_address = "TO EMAIL HERE"
-gmail_app_password = "GMAIL APP PASSWORD HERE"
-```
+
 See [Gmail - Sign in with app passwords](https://support.google.com/mail/answer/185833?hl=en) for more info on gmail app passwords, these are different to a normal gmail password. 
 
+#### Additional Configuration
 
-Next, activate the virtual environment for crewai:
+##### Tensorflow model configuration
+Due to size, the Tensorflow classifier model is not distributed in the git repository. You will need to add the tensorflow `.keras` files to the `src/ids3000/tools/classifier/saved_model` folder before running the project. You may also train the model by following the [Tensorflow model training instructions](./src/ids3000/tools/classifier/Readme.md).
+
+### Docker container instructions
+To give your agents something to work with, in a separate terminal, navigate to the `suricata-tcpreplay` folder, create a folder labelled `captures` and provide a packet capture labelled `capture.pcap` for the system to analyse. To build and start the container simply run `docker compose up`. This may take some time on first run, while waiting for the image to build. Detailed instructions are available at the [suricata-tcpreplay container advanced configuration](./suricata-tcpreplay/Readme.md) page.
+
+### Project Run
+After [starting the Docker container](#docker-container-instructions), activate the virtual environment and run the project:
 
 ### Linux/WSL/MacOS  
 ```bash
 source .venv/bin/activate
+crewai run
 ```
 
 ### Windows  
 ```PowerShell
 call .\.venv\Scripts\activate
-```
-
-
-## Running the Project
-
-To kickstart your crew of AI agents, run this from the root folder of your project:
-
-### Linux/WSL/MacOS  
-```bash
 crewai run
 ```
 
-### Windows  
-```PowerShell
-crewai run
-```
-
-This command initializes the IDS3000 Crew, assembling the agents and assigning them tasks as defined in the configuration.
-
-### Alert tracking
-
-To start tracking Suricata alerts, first activate the virtual environment as described in the project setup section, then navigate to `./src/ids3000/alert_tracker/` and run the alert tracking tool:
-
-### Linux/WSL
-```bash
-python3 alert_tracker.py
-```
-
-### MacOS 
-```bash
-python alert_tracker.py
-```
-
-### Windows 
-```powershell
-python alert_tracker.py
-```
-
-### Docker container instructions
-
-To give your agents something to work with, in a separate terminal, navigate to the `suricata-tcpreplay` folder, create a folder labelled `captures` and provide a packet capture labelled `capture.pcap` for the system to analyse. To build and start the container simply run `docker compose up`. 
-
-Detailed instructions are found below.
-
-<img width="375" height="200" alt="0Z2J8xXd3X0SJuphA-3239266095" src="https://github.com/user-attachments/assets/ff7dc5e7-a454-4014-a7b2-2045cd0c15e1" />
-
-The suricata-tcpreplay container integrates **Suricata** and **tcpreplay** to enable live packet replay and analysis. Managed by `docker-compose`, the container is designed for ease of use and system compatibility. It provides basic variables for configuring `tcpreplay` and `suricata`, and exposes Suricata's logs for investigation.
-
-Read the [suricata-tcpreplay container instructions](./suricata-tcpreplay/Readme.md) to set up the container for live packet replay and to give your agents something to work with!
-
+This initializes the IDS3000 Crew, assembling the agents and assigning them tasks as defined in the configuration.
