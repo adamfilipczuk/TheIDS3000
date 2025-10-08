@@ -3,7 +3,7 @@ This index file explains all major files and folders in the IDS3000 project. The
 
 ## Table of Contents
 - [**Project Root**](#project-root)
-- [**src/ids3000**](#src\/ids3000)
+- [**src/ids3000**](#srcids3000)
 	- [Tools Folder](#tools-folder) 
 - [**suricata-tcpreplay**](#suricata-tcpreplay)
 ## Project Root
