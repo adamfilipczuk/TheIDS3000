@@ -1,7 +1,17 @@
 # AI Agents Enhancing Cybersecurity in Cyber Physical Systems - IDS3000
 <img width="1024" height="700" alt="IDS3000 Logo" src="https://github.com/user-attachments/assets/abe8771b-0558-4e86-a0b1-591d30552429" />
 
-Welcome to the IDS3000 detection and response system. The project leverages agentic AI to provide enhanced responses to network threats.
+Welcome to the IDS3000 detection and response system. The project leverages agentic AI to provide enhanced responses to network threats. The system is currently trained to work with 4 network captures from the IoT-23 Internet of Things dataset:  
+**Malicious**
+- `CTU-IoT-Malware-Capture-34-1` (Mirai)
+- `CTU-IoT-Malware-Capture-3-1` (Muhstik)  
+
+**Benign**
+- `CTU-Honeypot-Capture-4-1` (Phillips Hue)
+- `CTU-Honeypot-Capture-5-1` (Amazon Alexa)
+
+- [IoT-23 Dataset Homepage](https://www.stratosphereips.org/datasets-iot23)
+- [IoT-23 Dataset Files](https://mcfp.felk.cvut.cz/publicDatasets/IoT-23-Dataset/)
 
 ## Contents
 - [**Installation and Setup**](#installation-and-setup)
@@ -82,7 +92,7 @@ See [Gmail - Sign in with app passwords](https://support.google.com/mail/answer/
 Due to size, the Tensorflow classifier model is not distributed in the git repository. You will need to add the tensorflow `.keras` files to the `src/ids3000/tools/classifier/saved_model` folder before running the project. You may also train the model by following the [Tensorflow model training instructions](./src/ids3000/tools/classifier/Readme.md).
 
 ### Docker container instructions
-To give your agents something to work with, in a separate terminal, navigate to the `suricata-tcpreplay` folder, create a folder labelled `captures` and provide a packet capture labelled `capture.pcap` for the system to analyse. To build and start the container simply run `docker compose up`. This may take some time on first run, while waiting for the image to build. Detailed instructions are available at the [suricata-tcpreplay container advanced configuration](./suricata-tcpreplay/Readme.md) page.
+To give your agents something to work with, in a separate terminal, navigate to the `suricata-tcpreplay` folder, create a folder labelled `captures` and provide a packet capture [from the IoT-23 dataset](https://mcfp.felk.cvut.cz/publicDatasets/IoT-23-Dataset/IndividualScenarios/) labelled `capture.pcap` for the system to analyse. To build and start the container simply run `docker compose up`. This may take some time on first run, while waiting for the image to build. Detailed instructions are available at the [suricata-tcpreplay container advanced configuration](./suricata-tcpreplay/Readme.md) page.
 
 ### Project Run
 After [starting the Docker container](#docker-container-instructions), activate the virtual environment and run the project:
