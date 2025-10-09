@@ -12,7 +12,12 @@ suricata_report:
     or containment, if not then note it as normal traffic behaviour. 
     Send all the data at the same time. The alerts are provided here: {event}
   expected_output: >
-    A comprehensive report on the alerts formatted in markdown.
+    A comprehensive report on the alerts formatted in markdown in which:
+    Each malicious or potentially malicious alert is analysed in detail,
+    The source and destination of the traffic is identified,
+    metadata about the traffic is provided (eg. protocol, ports, packet sizes, signature IDs),
+    The timestamps of the traffic are noted,
+    A clear classification of the traffic is given (high, medium, low concern),
   agent: suricata_analyst
   markdown: true 
   output_file: output/suricata_report.md
@@ -27,9 +32,15 @@ incident_planning:
     switches, the (sub)network(s) and users on the network. If traffic is
     normal, then note this and tell responders to continue monitoring as normal.
   expected_output: >
-    A report for dissemination to incident responders, covering all required 
-    points in clear and delineated sections so that responders may access 
-    wider context but easily understand their own tasks; formatted in markdown.
+    A report for dissemination to incident responders, being simple
+    and informative; formatted in markdown. It can only include information 
+    under these headings:
+    - The result of the classifier_tool for each packet is included (if available),
+    - Summary of the incident
+    - Immediate action that have been taken
+    - Further actions to be taken
+    - Preservation of evidence
+    - Communication plan
   agent: incident_manager 
   output_file: output/incident_plan.md
   context: ["suricata_report"]
@@ -43,7 +54,16 @@ email_task:
     sure to phrase this in the present tense.
   expected_output: >
     An email describing the network incident threat and planned responses, if 
-    any. Please also provide a file artifact of the email. 
+    any. This email must be beneficial and reassuring for stakeholders whilst 
+    also informing. Include:
+    - Address the email to 'Site Manager'
+    - Time of threat
+    - Actions that have been taken
+    - What as (we) the system is doing to further resolve the issue
+    - Sign the email as 'IDS 3000 Automated System'
+    This information can be extrapolaed from the suricata_report and 
+    incident_planning reports. The email should be concise and to the point.
+    Please also provide a file artifact of the email.
   agent: email_agent
   output_file: output/email.txt
   context: ["suricata_report", "incident_planning"] 
@@ -63,6 +83,14 @@ cisco_configuration_report:
   expected_output: >
     A markdown report detailing what actions are being taken (if any) and two 
     code blocks, one for Cisco router commands, one for Cisco switch commands.
+    These commands must focus on:
+    - Blocking malicious IP addresses
+    - Blocking malicious ports
+    - Isolating affected devices
+    - Containment of lateral movement
+    - Any other configuration changes that would help mitigate the threat
+    - If absolutely nescessary, enable logging for further investigation however,
+    keep in mind that suricata is already running on the network.
   agent: cisco_admin
   output_file: output/cisco_configuration_report.md
   context: ["suricata_report", "incident_planning"]
