@@ -35,7 +35,7 @@ incident_planning:
     A report for dissemination to incident responders, being simple
     and informative; formatted in markdown. It can only include information 
     under these headings:
-    - The result of the classifier_tool for each packet is included (if available),
+    - The result of the classifier_tool rating for each packet is included (if available),
     - Summary of the incident
     - Immediate action that have been taken
     - Further actions to be taken
