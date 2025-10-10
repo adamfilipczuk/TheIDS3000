@@ -92,7 +92,7 @@ def process_buffer():
 
             if data_to_process: #remaining data is imporant so half wait time
                 chunk = data_to_process[:]  # take all remaining lines
-                print("Sending remaining data") #standalone
+                #print("Sending remaining data") #standalone
                 send_data = socket_sender(HOST, PORT)
                 send_data.send_data(chunk)
                 data_to_process = None  # clear after sending
@@ -107,7 +107,7 @@ def alert_tracker():
     if not os.path.isfile(watch_path):
         os.makedirs(os.path.dirname(watch_path), exist_ok=True)
         open(watch_path, 'a').close()  # create the file if it doesn't exist
-        print(f"Created missing file at {watch_path}, ensure Suricata is configured to write to this path.") #standalone
+        print(f"Created missing file at {watch_path}, ensure Suricata is running and configured to write to this path.") #standalone
 
     threading.Thread(target=process_buffer, daemon=True).start() #starting a thread to process the buffer in background
     fw = file_watcher(watch_path)

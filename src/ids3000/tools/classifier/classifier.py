@@ -68,7 +68,7 @@ def run_prob(features_tf):
 # Classify eve.json alerts
 
 def classify_eve(data):
-    print(data)
+    #print(data)
     split_data = data.split("|")
     classified_data = []
 
@@ -109,4 +109,3 @@ def classify_eve(data):
         
         
     return classified_data
-

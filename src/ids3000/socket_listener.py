@@ -40,12 +40,11 @@ def socket_listener():
                 while True:
                     conn, addr = s.accept()
                     with conn:
-                        print(f"Connected by {addr}")
-                        data = recv_all(conn)  # calls function to receive all data dynamically
+                        #print(f"Connected by {addr}")
+                        data = conn.recv(10000)  # Adjust buffer size as needed can be changed to adjust dynamically
                         if data:
-                            # commented out this printing as it shows in crewai run
                             #print(f"[NEW DATA] {data.decode('utf-8')}")
-                            print(list(data_queue.queue))
+                            #print(list(data_queue.queue))
                             for line in data.decode('utf-8').splitlines():
                                 if line.strip():
                                     data_queue.put(line.strip())

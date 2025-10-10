@@ -43,6 +43,6 @@ src/ids3000/tools/.env
 # --- output files ---
 output/*
 
-# --- Classifier Files ---
-src/ids3000/tools/classifier/data/*
+# --- Classifier Model ---
+# (unable to be distributed via git due to size)
 src/ids3000/tools/classifier/saved_model/*
