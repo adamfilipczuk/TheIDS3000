@@ -51,3 +51,8 @@ output/*
 # --- Classifier Model ---
 # (unable to be distributed via git due to size)
 src/ids3000/tools/classifier/saved_model/*
+
+# --- add saved_model folder ---
+# For ease of configuration.
+!src/ids3000/tools/classifier/saved_model/.placeholder-file
+
