@@ -36,6 +36,11 @@ crew.log
 suricata-tcpreplay/captures/*
 suricata-tcpreplay/suricata/*
 
+# --- suricata placeholder files ---
+# So that project is distributed with captures and suricata folders for ease of use.
+!suricata-tcpreplay/captures/.placeholder-file
+!suricata-tcpreplay/suricata/.placeholder-file
+
 # --- Further changes to .env files ---
 .env
 src/ids3000/tools/.env
