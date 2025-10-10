@@ -84,13 +84,15 @@ cisco_configuration_report:
     A markdown report detailing what actions are being taken (if any) and two 
     code blocks, one for Cisco router commands, one for Cisco switch commands.
     These commands must focus on:
-    - Blocking malicious IP addresses
-    - Blocking malicious ports
-    - Isolating affected devices
-    - Containment of lateral movement
+    - Blocking any malicious IP addresses
+    - Blocking any malicious ports
+    - Isolating affected devices if communication should be isolated
+    - Containment of lateral movement in the case of malicious communications
     - Any other configuration changes that would help mitigate the threat
     - If absolutely nescessary, enable logging for further investigation however,
     keep in mind that suricata is already running on the network.
+    Finally, if data is benign, simply provide shell comments noting this in your
+    reports for both the router and switch configurations.
   agent: cisco_admin
   output_file: output/cisco_configuration_report.md
   context: ["suricata_report", "incident_planning"]
