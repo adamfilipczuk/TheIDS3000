@@ -15,6 +15,8 @@ from sklearn.model_selection import train_test_split
 #This model was trained using 
 # CTU-IoT-Malware-Capture-34-1 
 # CTU-IoT-Malware-Capture-3-1
+# CTU-Honeypot-Capture-4-1
+# CTU-Honeypot-Capture-5-1
 #
 
 LEARNING_DATA_PATH = pathlib.Path("./data/conn.log.labeled")
